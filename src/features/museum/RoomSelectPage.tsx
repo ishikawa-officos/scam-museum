@@ -54,7 +54,7 @@ export function RoomSelectPage() {
                   <h2
                     className={[
                       'mt-1.5 font-display text-[22px] font-bold leading-snug',
-                      isReady ? 'text-hall-text' : 'text-hall-muted/60',
+                      isReady ? 'text-hall-text' : 'text-hall-muted',
                     ].join(' ')}
                   >
                     {room.title}

@@ -24,11 +24,11 @@ function GroupMedia({ media }: { media: Media }) {
     case 'receipt':
       return (
         <div className="mt-1.5 rounded-lg border border-black/10 bg-white px-3 py-2">
-          <p className="text-[10.5px] text-black/45">{media.label}</p>
-          <p className="text-[17px] font-bold tabular-nums text-emerald-600">
+          <p className="text-[10.5px] text-black/60">{media.label}</p>
+          <p className="text-[17px] font-bold tabular-nums text-emerald-700">
             +¥{media.amount.toLocaleString('ja-JP')}
           </p>
-          {media.sub && <p className="text-[10.5px] text-black/40">{media.sub}</p>}
+          {media.sub && <p className="text-[10.5px] text-black/60">{media.sub}</p>}
         </div>
       );
     case 'image':
@@ -56,7 +56,7 @@ function GroupMedia({ media }: { media: Media }) {
       return (
         <div className="mt-1.5 rounded-lg border border-black/10 bg-white px-3 py-2">
           <p className="text-[12px] font-semibold leading-tight">{media.title}</p>
-          <p className="text-[10.5px] text-black/45">{media.domain}</p>
+          <p className="text-[10.5px] text-black/60">{media.domain}</p>
         </div>
       );
   }
@@ -86,7 +86,7 @@ export function GroupChatSurface({ view, speakers, transcript, typing, onExit }:
           </button>
           <div className="min-w-0 flex-1">
             <p className="truncate text-[15px] font-semibold leading-tight">{view.name}</p>
-            <p className="flex items-center gap-1 text-[11px] text-black/45">
+            <p className="flex items-center gap-1 text-[11px] text-black/60">
               <Users size={11} />
               {view.memberCount}
             </p>

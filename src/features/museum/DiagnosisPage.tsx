@@ -105,7 +105,7 @@ export function DiagnosisPage() {
                     transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
                   />
                 </div>
-                <p className="mt-1.5 text-[11px] text-hall-muted/70">
+                <p className="mt-1.5 text-[11px] text-hall-muted">
                   関連：{axis.rooms.join('・')}
                 </p>
                 {isPrimary && (

@@ -51,7 +51,18 @@ if (!existsSync(path.join(DIST, 'ogp.png'))) {
   notes.push('OG画像 dist/ogp.png があります。');
 }
 
-// 4) 画面に残った制作メモ
+// 4) robots.txt と sitemap.xml
+//    SPAなので、無いと index.html がフォールバックで返り、
+//    クローラーは robots.txt としてHTMLを読むことになる
+for (const f of ['robots.txt', 'sitemap.xml']) {
+  if (!existsSync(path.join(DIST, f))) {
+    problems.push(`dist/${f} がありません。vite.config.ts の seoFiles プラグインを確認してください。`);
+  } else {
+    notes.push(`${f} が出力されています。`);
+  }
+}
+
+// 5) 画面に残った制作メモ
 const assets = path.join(DIST, 'assets');
 const { readdir } = await import('node:fs/promises');
 const jsFiles = (await readdir(assets)).filter((f) => f.endsWith('.js'));

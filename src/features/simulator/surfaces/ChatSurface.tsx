@@ -33,7 +33,7 @@ function MediaBlock({ media }: { media: Media }) {
               {media.domain}
             </p>
             {media.caption && (
-              <p className="mt-1.5 text-[10px] leading-snug text-black/40">{media.caption}</p>
+              <p className="mt-1.5 text-[10px] leading-snug text-black/60">{media.caption}</p>
             )}
           </div>
         </div>
@@ -42,10 +42,10 @@ function MediaBlock({ media }: { media: Media }) {
       return (
         <div className="mt-2 rounded-xl border border-black/10 bg-white px-3 py-2.5">
           <p className="text-[11px] text-black/50">{media.label}</p>
-          <p className="mt-0.5 text-lg font-bold tabular-nums text-emerald-600">
+          <p className="mt-0.5 text-lg font-bold tabular-nums text-emerald-700">
             +¥{media.amount.toLocaleString('ja-JP')}
           </p>
-          {media.sub && <p className="mt-0.5 text-[11px] text-black/40">{media.sub}</p>}
+          {media.sub && <p className="mt-0.5 text-[11px] text-black/60">{media.sub}</p>}
           <div aria-hidden className="mt-2 flex h-8 items-end gap-0.5">
             {[28, 34, 30, 42, 46, 40, 58, 64, 60, 78, 86, 96].map((h, i) => (
               <div
@@ -87,7 +87,7 @@ function MediaBlock({ media }: { media: Media }) {
             className="mt-2 w-full rounded-lg"
             fallback={builtInChart}
           />
-          {media.caption && <p className="mt-1 text-[10.5px] text-white/35">{media.caption}</p>}
+          {media.caption && <p className="mt-1 text-[10.5px] text-white/55">{media.caption}</p>}
         </div>
       );
     }
@@ -136,7 +136,7 @@ export function ChatSurface({ contact, transcript, typing, onExit }: Props) {
         <div className="min-w-0 flex-1">
           <p className="truncate text-[15px] font-semibold leading-tight">{contact.displayName}</p>
           {contact.subtitle && (
-            <p className="flex items-center gap-1 text-[11px] text-emerald-600">
+            <p className="flex items-center gap-1 text-[11px] text-emerald-700">
               <span className="size-1.5 rounded-full bg-emerald-500" />
               {contact.subtitle}
             </p>
@@ -154,7 +154,7 @@ export function ChatSurface({ contact, transcript, typing, onExit }: Props) {
             if (item.kind === 'time') {
               return (
                 <motion.div key={item.id} {...bubbleMotion} className="py-2 text-center">
-                  <span className="rounded-full bg-black/8 px-3 py-1 text-[11px] text-black/45">
+                  <span className="rounded-full bg-black/8 px-3 py-1 text-[11px] text-black/60">
                     {item.label}
                   </span>
                 </motion.div>

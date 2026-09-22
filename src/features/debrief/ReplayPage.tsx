@@ -250,7 +250,7 @@ export function ReplayPage() {
             return (
               <p
                 key={`t-${i}`}
-                className="pt-5 text-center text-[11.5px] tracking-widest text-hall-muted/60"
+                className="pt-5 text-center text-[11.5px] tracking-widest text-hall-muted"
               >
                 {item.label}
               </p>
@@ -322,10 +322,12 @@ export function ReplayPage() {
                 className={[
                   'rounded-2xl border-2 px-4 py-3',
                   marked ? MARKED : PLAIN,
-                  m.from === 'system' ? 'opacity-70' : '',
+                  // システム表示は控えめにするが、opacity で全体を薄めると
+                  // 小さいラベルがコントラスト比を割る。背景だけ落とす
+                  m.from === 'system' ? 'bg-hall-bg/60' : '',
                 ].join(' ')}
               >
-                <p className="text-[10.5px] tracking-[0.15em] text-hall-muted/70">
+                <p className="text-[10.5px] tracking-[0.15em] text-hall-muted">
                   {m.from === 'system' ? (
                     'システム'
                   ) : (
@@ -389,7 +391,7 @@ export function ReplayPage() {
               )}
 
               <div className="rounded-2xl border-2 border-hall-line bg-white/[0.03] px-4 py-3">
-                <p className="text-[10.5px] tracking-[0.15em] text-hall-muted/70">あなたの選択</p>
+                <p className="text-[10.5px] tracking-[0.15em] text-hall-muted">あなたの選択</p>
                 <p className="mt-1.5 text-[14px] leading-relaxed text-hall-text">
                   {choice.label}
                   {choice.irreversible && (
@@ -406,7 +408,7 @@ export function ReplayPage() {
 
                 {beat.pivotal && alternatives.some((a) => a.outcomeHint) && (
                   <div className="mt-3.5 border-t border-hall-line pt-3">
-                    <p className="text-[10.5px] tracking-[0.15em] text-hall-muted/70">
+                    <p className="text-[10.5px] tracking-[0.15em] text-hall-muted">
                       選ばなかった道
                     </p>
                     <ul className="mt-2 space-y-2">
