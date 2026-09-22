@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import type { Choice, Stats } from './engine/types';
 import { isChoiceAvailable } from './engine/useScenarioRunner';
+import { PACE_TIME_LIMIT, usePlayStore } from '@/store/usePlayStore';
 
 type Props = {
   choices: Choice[];
@@ -20,20 +21,28 @@ type Props = {
  */
 export function ChoicePanel({ choices, stats, onChoose, timeLimit }: Props) {
   const [monologue, setMonologue] = useState<string | null>(null);
-  const [remaining, setRemaining] = useState(timeLimit?.seconds ?? 0);
   const fired = useRef(false);
 
   // 制限時間（SPEC.md §2.5）。急かされると、選ぶ前に選ばされる。
+  // ただし秒数と自動選択の有無は来館者の設定に従う（SPEC.md §3.5 / WCAG 2.2.1）。
+  const paceMode = usePlayStore((s) => s.paceMode);
+  const multiplier = PACE_TIME_LIMIT[paceMode];
+  const autoSelects = multiplier !== null;
+  const seconds = timeLimit ? Math.round(timeLimit.seconds * (multiplier ?? 1)) : 0;
+
+  const [remaining, setRemaining] = useState(seconds);
+
   const active = Boolean(timeLimit) && choices.length > 0;
   useEffect(() => {
     if (!active || !timeLimit) return;
-    setRemaining(timeLimit.seconds);
+    setRemaining(seconds);
     fired.current = false;
     const timer = window.setInterval(() => {
       setRemaining((prev) => {
         if (prev <= 1) {
           window.clearInterval(timer);
-          if (!fired.current) {
+          // 手動モードでは秒読みだけ進み、代わりに選ばれることはない
+          if (!fired.current && autoSelects) {
             fired.current = true;
             onChoose(timeLimit.defaultChoiceId);
           }
@@ -44,7 +53,7 @@ export function ChoicePanel({ choices, stats, onChoose, timeLimit }: Props) {
     }, 1000);
     return () => window.clearInterval(timer);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [active, timeLimit?.seconds, timeLimit?.defaultChoiceId]);
+  }, [active, seconds, autoSelects, timeLimit?.defaultChoiceId]);
 
   const handleChoose = (id: string) => {
     fired.current = true;
@@ -70,13 +79,19 @@ export function ChoicePanel({ choices, stats, onChoose, timeLimit }: Props) {
             <div className="px-1 pb-1">
               <div className="flex items-center justify-between text-[11.5px] text-rose-600">
                 <span>返答を待たれています</span>
-                <span className="tabular-nums font-semibold">残り {remaining} 秒</span>
+                <span className="tabular-nums font-semibold">
+                  {remaining > 0
+                    ? `残り ${remaining} 秒`
+                    : autoSelects
+                      ? '時間切れ'
+                      : '時間切れ（自動では選ばれません）'}
+                </span>
               </div>
               <div className="mt-1 h-1 overflow-hidden rounded-full bg-black/10">
                 <motion.div
                   className="h-full bg-rose-500"
                   initial={{ width: '100%' }}
-                  animate={{ width: `${(remaining / timeLimit.seconds) * 100}%` }}
+                  animate={{ width: `${seconds ? (remaining / seconds) * 100 : 0}%` }}
                   transition={{ duration: 1, ease: 'linear' }}
                 />
               </div>

@@ -11,6 +11,20 @@ export const PACE_INTERVAL: Record<PaceMode, number | null> = {
   manual: null,
 };
 
+/**
+ * 制限時間の倍率。null は「時間切れでも自動選択しない」。
+ *
+ * 急かされること自体が展示物（第3展示室の「たった4時間で終わる」）なので、
+ * 秒読みを消すわけにはいかない。一方で、15秒で自動選択される作りは、
+ * その時間内に操作できない人から選ぶ機会そのものを奪う。
+ * 秒読みは残したまま、延長と自動選択の停止を選べるようにしている（WCAG 2.2.1）。
+ */
+export const PACE_TIME_LIMIT: Record<PaceMode, number | null> = {
+  thrill: 1,
+  slow: 2,
+  manual: null,
+};
+
 export const PACE_LABELS: { id: PaceMode; name: string; detail: string }[] = [
   {
     id: 'thrill',
@@ -20,12 +34,12 @@ export const PACE_LABELS: { id: PaceMode; name: string; detail: string }[] = [
   {
     id: 'slow',
     name: 'じっくり観察モード',
-    detail: '同じ演出を半分の速さで。読みながら仕掛けを観察したい方へ',
+    detail: '同じ演出を半分の速さで。制限時間も2倍。読みながら仕掛けを観察したい方へ',
   },
   {
     id: 'manual',
     name: '手動モード',
-    detail: '流れる演出を止め、まとめて表示します。自分のペースで読みたい方へ',
+    detail: '流れる演出を止め、まとめて表示します。時間切れでも勝手に選ばれません',
   },
 ];
 

@@ -4,6 +4,7 @@ import { Eye, Link2, X } from 'lucide-react';
 import { TACTICS, type TacticCard } from '@/content/tactics';
 import type { TacticId } from '@/features/simulator/engine/types';
 import { RichText } from '@/components/ui/RichText';
+import { useFocusTrap } from '@/components/ui/useFocusTrap';
 
 type Props = {
   card: TacticCard | null;
@@ -15,6 +16,9 @@ type Props = {
 
 /** 手口カード（SPEC.md §3.3） */
 export function TacticCardModal({ card, context, onClose, onSelectRelated }: Props) {
+  // 関連カードへ移ると中身だけ差し替わるので、card.id を渡して再フォーカスさせる
+  const panelRef = useFocusTrap<HTMLDivElement>(Boolean(card), card?.id ?? null);
+
   useEffect(() => {
     if (!card) return;
     const onKey = (e: KeyboardEvent) => {
@@ -47,7 +51,9 @@ export function TacticCardModal({ card, context, onClose, onSelectRelated }: Pro
             exit={{ y: 40, opacity: 0 }}
             transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
             onClick={(e) => e.stopPropagation()}
-            className="thin-scroll max-h-[86dvh] w-full max-w-lg overflow-y-auto rounded-t-2xl border-2 border-hall-line bg-hall-surface p-6 pb-8 sm:rounded-2xl"
+            ref={panelRef}
+            tabIndex={-1}
+            className="thin-scroll max-h-[86dvh] w-full max-w-lg overflow-y-auto rounded-t-2xl border-2 border-hall-line bg-hall-surface p-6 pb-8 outline-none sm:rounded-2xl"
           >
             <div className="flex items-start justify-between gap-4">
               <div>
