@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useStickToBottom } from './useStickToBottom';
 import { AnimatePresence, motion } from 'framer-motion';
 import { ChevronLeft, Link2, MoreVertical, Phone, Video } from 'lucide-react';
 import type { Contact, Media } from '../engine/types';
@@ -108,11 +108,7 @@ function MediaBlock({ media }: { media: Media }) {
  * 審査員ではなく当事者として相手の言葉を受け取るための画面（SPEC.md §2.4）。
  */
 export function ChatSurface({ contact, transcript, typing, onExit }: Props) {
-  const endRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    endRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });
-  }, [transcript.length, typing]);
+  const endRef = useStickToBottom([transcript.length, typing]);
 
   return (
     <div className="flex min-h-0 flex-1 flex-col bg-app-bg">

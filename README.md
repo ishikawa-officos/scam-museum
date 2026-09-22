@@ -31,6 +31,7 @@ npm run dev        # http://localhost:5173
 | `npm run dev` | 開発サーバー。起動時にシナリオの整合性を自動チェックする |
 | `npm run build` | 本番ビルド（`dist/`） |
 | `npm run typecheck` | 型チェック |
+| `npm run make-charts` | 第1展示室のチャート画像2枚をSVGから生成（数字が展示の中身なので手描き） |
 | `npm run optimize-images` | `assets-src/` の原本を `public/assets/` の webp に変換 |
 | `npm run check-assets` | シナリオが参照する画像の配置状況を確認 |
 | `npm run export-scenario` | シナリオ本文を `docs/*.md` に書き出す |

@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useStickToBottom } from './useStickToBottom';
 import { AnimatePresence, motion } from 'framer-motion';
 import { ChevronLeft, MoreVertical, Pin, Search, Users } from 'lucide-react';
 import type { GroupView, Media, Speaker } from '../engine/types';
@@ -70,11 +70,7 @@ function GroupMedia({ media }: { media: Media }) {
  * この確認できなさこそが展示物なので、UI側でも一切の答え合わせを出さない。
  */
 export function GroupChatSurface({ view, speakers, transcript, typing, onExit }: Props) {
-  const endRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    endRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });
-  }, [transcript.length, typing]);
+  const endRef = useStickToBottom([transcript.length, typing]);
 
   return (
     <div className="flex min-h-0 flex-1 flex-col bg-[#7b98b4]">

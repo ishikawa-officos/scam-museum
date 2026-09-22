@@ -34,8 +34,8 @@ npm run optimize-images
 | `emma-avatar.*` | `/assets/romance/emma-avatar.webp` | チャットヘッダー | 配置済み |
 | `emma-office-night.*` | `/assets/romance/emma-office-night.webp` | b06 のメッセージ | 配置済み |
 | `emma-portrait.*` | `/assets/romance/emma-portrait.webp` | b06 のリアクション | 配置済み |
-| `chart-december.*` | `/assets/romance/chart-december.webp` | b09 のメッセージ | 未配置（内蔵SVGで代替） |
-| `chart-surge.*` | `/assets/romance/chart-surge.webp` | b24 のメッセージ | 未配置（内蔵SVGで代替） |
+| `chart-december.png` | `/assets/romance/chart-december.webp` | b09 のメッセージ | 配置済み（`npm run make-charts` が生成） |
+| `chart-surge.png` | `/assets/romance/chart-surge.webp` | b24 のメッセージ | 配置済み（`npm run make-charts` が生成） |
 
 未配置でも画面は壊れません。写真はファイル名入りのプレースホルダー、
 チャートは内蔵SVGのグラフが表示されます。
@@ -54,9 +54,23 @@ npm run optimize-images
 - `emma-office-night`
   「高層オフィスの窓から見た夜景。室内は暗く、ガラスに照明がわずかに映り込む。
    人物は写っていない。スマートフォンで撮影したような自然な画質」
-- `chart-december`
-  「ダークテーマの資産運用アプリの画面。右肩上がりの緑色の折れ線グラフ。
-   数値やラベルは架空のもの。実在するサービス名やロゴは含めない」
+
+## チャート2枚は画像生成AIを使わない
+
+`chart-december` と `chart-surge` は `scripts/make-charts.mjs` がSVGから生成する。
+
+```bash
+npm run make-charts
+npm run optimize-images
+```
+
+画像生成AIに描かせると、日本語の字形と数字が崩れる（「評価損益」が「評佃損益」になる類）。
+この2枚は表示されている数字そのものが展示の中身で、リプレイでは注釈付きで読み直される。
+読めない数字では展示にならないので、ここだけは手で描いている。
+金額・期間・推移を変えたいときはスクリプトの定数を直すこと。
+
+**縦横比の制約**：縦に長い画像は吹き出しが選択肢パネルに隠れ、下半分に到達できなくなる。
+正方形に近い比率を保つこと。
 
 ## ファイル名を変えたいとき
 
