@@ -43,7 +43,9 @@ const VERDICT: Record<string, { tag: string; shout: string; lead: string }> = {
    */
   PROFIT: {
     tag: '勝ち逃げ',
-    shout: 'おめでとうございます。あなたの勝ちです。',
+    // 「おめでとうございます。あな／たの勝ちです。」と単語の途中で折り返していた。
+    // 文の切れ目で行を分ける（表示側は whitespace-pre-line）
+    shout: 'おめでとうございます。\nあなたの勝ちです。',
     lead: '入れた額より多く引き出して、黒字で帰ってきました。演出ではありません。相手は本当に損をしています。',
   },
   B_LUCKY: {
@@ -175,7 +177,7 @@ export function ResultPage() {
             経過日数 {result.stats.days} 日／一線を越えた操作{' '}
             {result.irreversibleChoices.length} 回
           </p>
-          <p className="relative mt-5 border-t border-hall-line pt-5 font-display font-bold text-[19px] leading-relaxed text-hall-text">
+          <p className="relative mt-5 whitespace-pre-line border-t border-hall-line pt-5 font-display font-bold text-[19px] leading-relaxed text-hall-text">
             {verdict.shout}
           </p>
           <p className="relative mt-3 text-[13.5px] leading-[1.9] text-hall-muted">
