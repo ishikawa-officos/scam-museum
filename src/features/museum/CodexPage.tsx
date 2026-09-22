@@ -5,6 +5,7 @@ import { HallFooter, HallLayout } from '@/components/ui/HallLayout';
 import { HallNav } from '@/components/ui/HallNav';
 import type { TacticId } from '@/features/simulator/engine/types';
 import { TacticCardModal } from '@/features/debrief/TacticCardModal';
+import { DrBug } from '@/components/ui/DrBug';
 
 /**
  * S-07 手口図鑑 — 防犯アーカイブ（SPEC.md §3.3）
@@ -22,10 +23,17 @@ export function CodexPage() {
 
       <p className="text-[11px] tracking-[0.2em] text-hall-accent">ARCHIVE</p>
       <h1 className="mt-2 font-display font-bold text-3xl">仕掛け図鑑</h1>
+
+      <div className="mt-5">
+        <DrBug
+          size="sm"
+          front="カードは最初から全部開いています。歩いていない部屋のものも。隠す理由がないので。"
+          back="26通り。人間を転ばせる方法は、今のところこれだけしか見つかっていない。少ないと思わないか。"
+        />
+      </div>
       <p className="mt-4 text-[14px] leading-[1.9] text-hall-muted">
         この館の4つの部屋で使われている仕掛けを、{TACTIC_LIST.length}枚のカードにまとめました。
         どれも「なぜ効くのか」と「現実での見分け方」が読めます。
-        歩いていない部屋のカードも含めて、すべて最初から開いています。隠す理由がないので。
       </p>
 
       {TACTIC_GROUPS.map((group, gi) => {

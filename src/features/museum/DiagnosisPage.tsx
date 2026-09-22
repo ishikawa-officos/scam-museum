@@ -7,6 +7,7 @@ import { HallFooter, HallLayout } from '@/components/ui/HallLayout';
 import { HallNav } from '@/components/ui/HallNav';
 import { usePlayStore } from '@/store/usePlayStore';
 import { AXES, buildShareText, diagnose, type AxisId } from './diagnosis';
+import { DrBug } from '@/components/ui/DrBug';
 
 const AXIS_ORDER: AxisId[] = ['affection', 'authority', 'conformity', 'sunkCost'];
 
@@ -44,6 +45,14 @@ export function DiagnosisPage() {
         <HallNav />
         <p className="text-[11px] tracking-[0.2em] text-hall-accent">REFLECTION</p>
         <h1 className="mt-2 font-display font-bold text-3xl">振り返り</h1>
+
+        <div className="mt-5">
+          <DrBug
+            size="sm"
+            front="点数ではありません。どの感情のツボを押されたときに転んだか、という記録です。"
+            back="押せば動く場所は、個体ごとに少しずつ違う。だがどれか一つは必ずある。例外を、私はまだ見ていない。"
+          />
+        </div>
         <p className="mt-5 text-[14px] leading-[1.9] text-hall-muted">
           まだどの部屋も歩いていません。ひとつでも通り抜けると、
           あなたの騙されツボがここに出ます。
@@ -66,10 +75,18 @@ export function DiagnosisPage() {
       <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
         <p className="text-[11px] tracking-[0.2em] text-hall-accent">YOUR WEAK SPOT</p>
         <h1 className="mt-2 font-display font-bold text-3xl">あなたの騙されツボ</h1>
+
+        <div className="mt-5">
+          <DrBug
+            size="sm"
+            front="点数ではありません。どの感情のツボを押されたときに転んだか、という記録です。"
+            back="押せば動く場所は、個体ごとに少しずつ違う。だがどれか一つは必ずある。例外を、私はまだ見ていない。"
+          />
+        </div>
+        {/* Dr.バグが「点数ではない」と言った直後なので、繰り返さない */}
         <p className="mt-4 text-[14px] leading-[1.9] text-hall-muted">
-          点数ではありません。{diagnosis.playedRooms}つの部屋を歩いたあなたが、
-          どの感情のツボを押されたときに転んだかの記録です。
-          ツボは誰にでもあります。自分のツボを知っているかどうかだけが、現実での差になります。
+          {diagnosis.playedRooms}つの部屋を歩いた結果です。ツボは誰にでもあります。
+          自分のツボを知っているかどうかだけが、現実での差になります。
         </p>
 
         {/* 3軸 */}

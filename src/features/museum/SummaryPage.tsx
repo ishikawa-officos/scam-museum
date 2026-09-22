@@ -2,6 +2,7 @@ import { motion } from 'framer-motion';
 import { ExternalLink, Phone, ShieldAlert } from 'lucide-react';
 import { HallFooter, HallLayout } from '@/components/ui/HallLayout';
 import { HallNav } from '@/components/ui/HallNav';
+import { DrBug } from '@/components/ui/DrBug';
 
 /**
  * 「これが出たら、その時点で手を止める」チェックリスト。
@@ -101,6 +102,18 @@ export function SummaryPage() {
         <h1 className="mt-2 font-display font-bold text-3xl leading-snug">
           持ち帰るもの
         </h1>
+
+        {/* ここだけは Dr.バグに芝居をさせない。
+            このページに来る人は、いま実際に困っている可能性がある。
+            表と裏で同じことを言う唯一の場所にしてある。
+            仮面が外れる場所が一箇所あることで、他の場所の二面性も効く。 */}
+        <div className="mt-5">
+          <DrBug
+            size="sm"
+            front="ここから先は展示ではありません。番号も窓口も、すべて実在します。芝居はここまでです。"
+            back="ここから先は展示ではありません。番号も窓口も、すべて実在します。芝居はここまでです。"
+          />
+        </div>
 
         {/* コアメッセージ */}
         <section className="mt-8 rounded-2xl border-2 border-hall-accent/45 bg-hall-accent/[0.07] p-5">

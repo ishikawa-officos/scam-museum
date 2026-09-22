@@ -5,6 +5,7 @@ import { ROOMS } from '@/content/scenarios';
 import { HallFooter, HallLayout } from '@/components/ui/HallLayout';
 import { HallNav } from '@/components/ui/HallNav';
 import { usePlayStore } from '@/store/usePlayStore';
+import { DrBug } from '@/components/ui/DrBug';
 
 /** S-02 展示室選択 */
 export function RoomSelectPage() {
@@ -24,8 +25,16 @@ export function RoomSelectPage() {
       </button>
 
       <h1 className="font-display font-bold text-3xl">順路</h1>
-      <p className="mt-3 text-[14px] leading-[1.9] text-hall-muted">
-        4つの部屋があります。好きな部屋から、好きな順に。
+
+      <div className="mt-5">
+        <DrBug
+          size="sm"
+          front="4つの部屋があります。好きな部屋から、好きな順に。順路という名前ですが、順番に意味はありません。"
+          back="どの扉から入っても、突く場所は決まっている。四つの部屋は、四つの穴にそれぞれ対応している。"
+        />
+      </div>
+
+      <p className="mt-4 text-[14px] leading-[1.9] text-hall-muted">
         どの部屋も、あなたを転ばせるために組まれています。
       </p>
 

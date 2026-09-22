@@ -5,6 +5,7 @@ import { HallFooter, HallLayout } from '@/components/ui/HallLayout';
 import { LoadingHall } from '@/components/ui/LoadingHall';
 import { useScenario } from './engine/useScenario';
 import { PACE_LABELS, usePlayStore } from '@/store/usePlayStore';
+import { DrBug } from '@/components/ui/DrBug';
 
 /** S-03 ブリーフィング */
 export function BriefingPage() {
@@ -39,6 +40,14 @@ export function BriefingPage() {
       <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
         <p className="text-[11px] tracking-[0.2em] text-hall-accent">{scenario.roomLabel}</p>
         <h1 className="mt-2 font-display font-bold text-3xl">{scenario.title}</h1>
+
+        <div className="mt-5">
+          <DrBug
+            size="sm"
+            front="まもなく入室です。返事を選ぶだけで進みます。警告は出ません。現実にも出ないので。"
+            back="観察を始める。言っておくが、私は途中で止めない。止めたら、何が起きたのか分からないままになる。"
+          />
+        </div>
 
         <section className="mt-9 rounded-xl border border-hall-line bg-hall-surface p-6">
           <h2 className="text-[12px] tracking-[0.2em] text-hall-muted">この部屋でのあなた</h2>

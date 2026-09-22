@@ -16,6 +16,7 @@ import {
 import { RichText } from '@/components/ui/RichText';
 import { usePlayStore } from '@/store/usePlayStore';
 import { TacticCardModal } from './TacticCardModal';
+import { DrBug } from '@/components/ui/DrBug';
 
 /** 手口が仕込まれている要素の見た目。正誤ではなく「ここに何があったか」だけを示す */
 const MARKED = 'border-hall-accent/45 bg-hall-accent/[0.05]';
@@ -229,9 +230,16 @@ export function ReplayPage() {
 
       <p className="text-[11px] tracking-[0.2em] text-hall-accent">{scenario.roomLabel}　舞台裏</p>
       <h1 className="mt-2 font-display font-bold text-3xl">仕掛けの種明かし</h1>
+
+      <div className="mt-5">
+        <DrBug
+          size="sm"
+          front="ここからは舞台裏です。どこで、何が、どんな順番であなたを転ばせたのか。全部お見せします。"
+          back="記録を見よう。あなたが気づかなかった場所こそ、最も深い穴だ。恥じることはない。そう設計されている。"
+        />
+      </div>
       <div className="mt-4 space-y-3 text-[14px] leading-[1.9] text-hall-muted">
         <p>
-        お待たせしました。ここからは舞台裏です。
           あなたが歩いた順路を、仕掛けをすべて開けた状態でもう一度お見せします。
           気づいた場所も、素通りした場所も、区別せずに並べています。
         </p>

@@ -3,6 +3,7 @@ import { ExternalLink, FileWarning, Github, Quote } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { HallFooter, HallLayout } from '@/components/ui/HallLayout';
 import { HallNav } from '@/components/ui/HallNav';
+import { DrBug } from '@/components/ui/DrBug';
 
 const SOURCES = [
   {
@@ -71,6 +72,14 @@ export function AboutPage() {
       <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
         <p className="text-[11px] tracking-[0.2em] text-hall-accent">ABOUT</p>
         <h1 className="mt-2 font-display font-bold text-3xl">このサイトについて</h1>
+
+        <div className="mt-5">
+          <DrBug
+            size="sm"
+            front="この館の作り方と、根拠にした資料です。疑ってから読んでください。それが正しい読み方です。"
+            back="出典を並べてある。確かめられるものだけを置いた。確かめようのない主張こそ、この館が展示している手口なのでね。"
+          />
+        </div>
 
         {/* 制作意図 */}
         <section className="mt-9">
