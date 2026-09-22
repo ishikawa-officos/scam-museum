@@ -153,6 +153,26 @@ if (/fonts\.(googleapis|gstatic)\.com/.test(html)) {
   notes.push('外部フォントへの依存はありません。');
 }
 
+// 5a) 選択の結果と、その後の会話の食い違い
+//     合流したビートの本文が特定の経路を前提に書かれていると、
+//     別の経路で来た人には意味の通らない会話になる。
+//     実際に「疑問を書かずに進んだのに、翌朝『昨日はびっくりしましたね』」が公開されていた。
+{
+  const { spawnSync } = await import('node:child_process');
+  const run = spawnSync(
+    process.execPath,
+    ['--experimental-strip-types', '--no-warnings', path.join(ROOT, 'scripts', 'check-branches.mjs')],
+    { cwd: ROOT, encoding: 'utf8' },
+  );
+  if (run.status !== 0) {
+    problems.push(
+      '未確認のビート合流があります。npm run check-branches を実行して内容を確認してください。',
+    );
+  } else {
+    notes.push('選択の結果と、その後の会話の食い違いは確認済みです。');
+  }
+}
+
 // 6) 画面に残った制作メモ
 const jsFiles = emitted.filter((f) => f.endsWith('.js'));
 let memoHit = false;
