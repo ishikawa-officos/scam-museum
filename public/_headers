@@ -1,16 +1,21 @@
 # Cloudflare Pages の既定は全ファイル max-age=0, must-revalidate で、
-# 毎回検証の往復が発生する。ファイル名にハッシュが入っているものは
+# 訪問のたびに検証の往復が発生する。
+#
+# 注意：ここの規則は「最も具体的なものが勝つ」のではなく、
+# 当たった規則がすべて連結される。/assets/* と /assets/romance/* を
+# 両方書くと Cache-Control が二重になり、先に書いたほうが効いてしまう。
+# 重ならないように、拡張子で切り分けている。
+#
+# 対象はビルド出力だけ。ファイル名にハッシュが入っていて、
 # 中身が変われば名前も変わるので、長期に固定してよい。
-/assets/*
+# 画像（webp）はファイル名が固定なので、ここでは触らない。
+# 差し替えたときに古いものが残り続けると、気づけないため。
+
+/assets/*.js
   Cache-Control: public, max-age=31536000, immutable
 
-# 画像はファイル名が固定なので immutable にはしない。
-# 差し替えたときに古いものが残り続けると気づけないため。
-/assets/romance/*
-  Cache-Control: public, max-age=86400
-/assets/itadaki/*
-  Cache-Control: public, max-age=86400
-/assets/police/*
-  Cache-Control: public, max-age=86400
-/assets/group/*
-  Cache-Control: public, max-age=86400
+/assets/*.css
+  Cache-Control: public, max-age=31536000, immutable
+
+/assets/*.woff2
+  Cache-Control: public, max-age=31536000, immutable
