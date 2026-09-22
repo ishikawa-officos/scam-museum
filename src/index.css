@@ -317,6 +317,16 @@
   color: var(--color-hall-accent);
 }
 
+/* 通話中の発言欄。
+   画面の短い端末では、古い発言が上にはみ出してスクロールになる。
+   そのとき端で文字が切り落とされると、壊れているように見える。
+   上端をぼかして「続きがある」ことを見た目で示す。 */
+.call-log {
+  padding-block: 0.5rem;
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 28px);
+  mask-image: linear-gradient(to bottom, transparent 0, #000 28px);
+}
+
 /* チャット領域のスクロールバーを控えめに */
 .thin-scroll::-webkit-scrollbar {
   width: 6px;
