@@ -59,15 +59,18 @@ ${PUBLIC_ROUTES.map(
  * すでに貼ったことのあるURLは、これだけでは更新されない。
  * その場合は ?v=2 のように、相手が見たことのないURLで貼り直す必要がある。
  */
-function versionOgImage(): Plugin {
+function ogpVersion(): string {
+  const file = path.join(process.cwd(), 'public', 'ogp.png');
+  if (!existsSync(file)) return 'dev';
+  return createHash('sha256').update(readFileSync(file)).digest('hex').slice(0, 8);
+}
+
+function versionOgImage(version: string): Plugin {
   return {
     name: 'version-og-image',
     apply: 'build',
     transformIndexHtml(html) {
-      const file = path.join(process.cwd(), 'public', 'ogp.png');
-      if (!existsSync(file)) return html;
-      const hash = createHash('sha256').update(readFileSync(file)).digest('hex').slice(0, 8);
-      return html.replace(/(content="[^"]*\/ogp\.png)"/g, `$1?v=${hash}"`);
+      return html.replace(/(content="[^"]*\/ogp\.png)"/g, `$1?v=${version}"`);
     },
   };
 }
@@ -112,9 +115,15 @@ function preloadFonts(): Plugin {
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '');
   const origin = (env.VITE_PUBLIC_ORIGIN ?? '').replace(/\/$/, '');
+  const ogp = ogpVersion();
 
   return {
-    plugins: [react(), tailwindcss(), seoFiles(origin), preloadFonts(), versionOgImage()],
+    // 共有するURLにも同じ版番号を付ける。
+    // LINEはページURL単位でOGPをキャッシュするので、素のURLを共有すると
+    // 過去に誰かが貼ったときの古いカードが出続ける。
+    // OG画像の中身が変わったときだけ値が変わるので、無駄にURLは散らからない。
+    define: { __OGP_VERSION__: JSON.stringify(ogp) },
+    plugins: [react(), tailwindcss(), seoFiles(origin), preloadFonts(), versionOgImage(ogp)],
     resolve: {
       alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) },
     },

@@ -6,7 +6,7 @@ import { ROOMS } from '@/content/scenarios';
 import { HallFooter, HallLayout } from '@/components/ui/HallLayout';
 import { HallNav } from '@/components/ui/HallNav';
 import { usePlayStore } from '@/store/usePlayStore';
-import { AXES, buildShareText, diagnose, type AxisId } from './diagnosis';
+import { AXES, buildShareText, diagnose, shareUrl, type AxisId } from './diagnosis';
 import { DrBug } from '@/components/ui/DrBug';
 
 const AXIS_ORDER: AxisId[] = ['affection', 'authority', 'conformity', 'sunkCost'];
@@ -21,7 +21,7 @@ export function DiagnosisPage() {
   const readyRooms = ROOMS.filter((r) => r.status === 'ready');
   const remaining = readyRooms.filter((r) => r.scenarioId && !records[r.scenarioId]);
 
-  const shareText = buildShareText(diagnosis, window.location.origin);
+  const shareText = buildShareText(diagnosis, shareUrl(window.location.origin));
   // 端末の共有シートが使えるか（スマホは使える、PCのブラウザは大体使えない）
   const canShare = typeof navigator !== 'undefined' && 'share' in navigator;
 

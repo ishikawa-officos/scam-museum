@@ -135,6 +135,20 @@ function manYen(yen: number): string {
  * 派手に転んだことが手柄になる（SPEC.md §2.4 の方針転換に沿う）。
  * ただし、実際の被害と混同されないよう、体験であることが一目で分かる形にする。
  */
+/**
+ * 共有するURL。
+ *
+ * 素のURLをそのまま渡すと、LINEでは過去に誰かが貼ったときのカードが出る。
+ * LINEはページURL単位でOGPを丸ごとキャッシュするため、こちらが画像を
+ * 差し替えても取りに来ない（実際にそうなった）。
+ *
+ * OG画像の中身から作った版番号を付けて、相手のキャッシュに無いURLにする。
+ * 画像が変わらないかぎり値も変わらないので、URLが無駄に散らかることはない。
+ */
+export function shareUrl(origin: string): string {
+  return `${origin.replace(/\/$/, '')}/?v=${__OGP_VERSION__}`;
+}
+
 export function buildShareText(diagnosis: Diagnosis, url: string): string {
   const lines: string[] = [];
 
