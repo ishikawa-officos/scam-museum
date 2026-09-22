@@ -1,0 +1,8 @@
+dist
+node_modules
+.DS_Store
+*.local
+.env.production
+
+# 採用しなかった画像の別案（原本は手元にのみ残す）
+assets-src/**/_unused/

@@ -1,0 +1,120 @@
+@import 'tailwindcss';
+
+@theme {
+  /* ── 館内モード（現代的な企画展）──────────────────────────
+     黒×金のクラシックな博物館から、スレートネイビー×エレクトリックイエローの
+     ポップな展示へ。知的好奇心を刺激しつつ、入りやすい温度にする。 */
+  --color-hall-bg: #0f172a; /* slate-900 */
+  --color-hall-surface: #1a2438; /* パネル。背景よりわずかに明るい */
+  --color-hall-line: #334155; /* slate-700 */
+  --color-hall-text: #f1f5f9; /* slate-100 */
+  --color-hall-muted: #94a3b8; /* slate-400 */
+
+  /* 主役は注意標識のイエロー。差し色にミントと警告オレンジ */
+  --color-hall-accent: #facc15; /* yellow-400 */
+  --color-hall-mint: #34d399; /* emerald-400 */
+  --color-hall-warn: #fb923c; /* orange-400 */
+
+  /* 体験モード（スマホの中身）: 実在アプリに寄せた明るい配色。ここは変えない */
+  --color-app-bg: #f2f4f7;
+  --color-app-them: #ffffff;
+  --color-app-me: #8de055;
+  --color-app-text: #1a1a1a;
+
+  --font-display: 'Zen Kaku Gothic New', 'Noto Sans JP', system-ui, sans-serif;
+}
+
+@layer base {
+  html {
+    color-scheme: dark;
+  }
+  body {
+    margin: 0;
+    background: var(--color-hall-bg);
+    color: var(--color-hall-text);
+    font-family:
+      'Noto Sans JP',
+      system-ui,
+      -apple-system,
+      'Hiragino Kaku Gothic ProN',
+      sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  :focus-visible {
+    outline: 3px solid var(--color-hall-accent);
+    outline-offset: 2px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* 蛍光マーカーで引いたような下線。見出しの一語を立たせるのに使う。
+   暗い背景では帯を厚くすると濁るので、細く・明るく引く */
+.marker {
+  background-image: linear-gradient(
+    transparent 74%,
+    color-mix(in srgb, var(--color-hall-accent) 85%, transparent) 74%
+  );
+  background-repeat: no-repeat;
+  padding-inline: 0.08em;
+}
+
+/* 展示会のタグのような小さなバッジ */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  border-radius: 9999px;
+  border: 1.5px solid var(--color-hall-line);
+  padding: 0.25rem 0.7rem;
+  font-size: 11.5px;
+  font-weight: 700;
+  line-height: 1.4;
+  color: var(--color-hall-muted);
+}
+.pill-accent {
+  border-color: color-mix(in srgb, var(--color-hall-accent) 55%, transparent);
+  background: color-mix(in srgb, var(--color-hall-accent) 12%, transparent);
+  color: var(--color-hall-accent);
+}
+
+/* 押し込めるボタン。上端のハイライトと、押下時に沈む動き */
+.btn-pop {
+  border-radius: 9999px;
+  border: 2px solid #0f172a;
+  box-shadow: 0 4px 0 0 #a16207;
+  transition:
+    transform 0.08s ease,
+    box-shadow 0.08s ease,
+    background-color 0.15s ease;
+}
+.btn-pop:hover {
+  transform: translateY(1px);
+  box-shadow: 0 3px 0 0 #a16207;
+}
+.btn-pop:active {
+  transform: translateY(4px);
+  box-shadow: 0 0 0 0 #a16207;
+}
+@media (prefers-reduced-motion: reduce) {
+  .btn-pop:hover,
+  .btn-pop:active {
+    transform: none;
+  }
+}
+
+/* チャット領域のスクロールバーを控えめに */
+.thin-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+.thin-scroll::-webkit-scrollbar-thumb {
+  background: #0000001f;
+  border-radius: 999px;
+}

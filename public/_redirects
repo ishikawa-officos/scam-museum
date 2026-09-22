@@ -1,0 +1,4 @@
+# SPA フォールバック（Cloudflare Pages / Netlify）
+# React Router の createBrowserRouter を使っているため、これが無いと
+# /rooms や /diagnosis を直接開いた時・リロードした時に 404 になる。
+/*    /index.html   200
