@@ -2,6 +2,9 @@ import { defineConfig, loadEnv, type Plugin } from 'vite';
 import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite';
 import { fileURLToPath, URL } from 'node:url';
+import path from 'node:path';
+import { createHash } from 'node:crypto';
+import { existsSync, readFileSync } from 'node:fs';
 
 /** 館内モードの公開ページ。体験中の画面（/play, /result, /replay）は状態に依存するので載せない */
 const PUBLIC_ROUTES = ['/', '/rooms', '/codex', '/diagnosis', '/summary', '/about'];
@@ -40,6 +43,31 @@ ${PUBLIC_ROUTES.map(
 </urlset>
 `,
       });
+    },
+  };
+}
+
+/**
+ * OG画像のURLに、中身のハッシュを付ける。
+ *
+ * SNSは og:image をURL単位でキャッシュする。ファイル名が ogp.png のままだと、
+ * 中身を差し替えてもURLが変わらないので、古い画像が出続ける。
+ * 実際に、デザインを刷新したあともLINEに旧デザインのカードが出た。
+ *
+ * 注意：これで直るのは「画像の」キャッシュ。
+ * LINEはページURL単位でもOGPを丸ごとキャッシュするので、
+ * すでに貼ったことのあるURLは、これだけでは更新されない。
+ * その場合は ?v=2 のように、相手が見たことのないURLで貼り直す必要がある。
+ */
+function versionOgImage(): Plugin {
+  return {
+    name: 'version-og-image',
+    apply: 'build',
+    transformIndexHtml(html) {
+      const file = path.join(process.cwd(), 'public', 'ogp.png');
+      if (!existsSync(file)) return html;
+      const hash = createHash('sha256').update(readFileSync(file)).digest('hex').slice(0, 8);
+      return html.replace(/(content="[^"]*\/ogp\.png)"/g, `$1?v=${hash}"`);
     },
   };
 }
@@ -86,7 +114,7 @@ export default defineConfig(({ mode }) => {
   const origin = (env.VITE_PUBLIC_ORIGIN ?? '').replace(/\/$/, '');
 
   return {
-    plugins: [react(), tailwindcss(), seoFiles(origin), preloadFonts()],
+    plugins: [react(), tailwindcss(), seoFiles(origin), preloadFonts(), versionOgImage()],
     resolve: {
       alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) },
     },
