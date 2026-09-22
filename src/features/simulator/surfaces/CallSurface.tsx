@@ -50,11 +50,11 @@ export function CallSurface({
   return (
     <div className="relative flex min-h-0 flex-1 flex-col bg-gradient-to-b from-[#1c1f26] to-[#0b0d11] text-white">
       {/* 発信者 */}
-      <div className="shrink-0 px-8 pt-12 text-center">
+      <div className="shrink-0 px-8 pt-7 text-center sm:pt-12">
         <p className="text-[13px] tracking-[0.2em] text-white/50">
           {view.state === 'incoming' ? '着信' : '通話中'}
         </p>
-        <h1 className="mt-3 text-[26px] font-semibold leading-tight">{view.callerName}</h1>
+        <h1 className="mt-2 text-[23px] font-semibold leading-tight sm:mt-3 sm:text-[26px]">{view.callerName}</h1>
         {view.callerClaim && (
           <p className="mt-2 text-[13.5px] leading-relaxed text-white/55">{view.callerClaim}</p>
         )}
@@ -64,7 +64,7 @@ export function CallSurface({
       </div>
 
       {/* 相手のアイコン（着信中は脈打つ） */}
-      <div className="flex shrink-0 justify-center py-8">
+      <div className="flex shrink-0 justify-center py-4 sm:py-8">
         <motion.div
           animate={
             view.state === 'incoming' ? { scale: [1, 1.06, 1] } : { scale: 1, opacity: 0.8 }
@@ -74,15 +74,18 @@ export function CallSurface({
               ? { duration: 1.6, repeat: Infinity, ease: 'easeInOut' }
               : { duration: 0.3 }
           }
-          className="grid size-24 place-items-center rounded-full bg-white/10 text-3xl"
+          className="grid size-20 place-items-center rounded-full bg-white/10 text-3xl sm:size-24"
           aria-hidden
         >
           👤
         </motion.div>
       </div>
 
-      {/* 相手の発言。直近数行だけが残る */}
-      <div className="min-h-0 flex-1 overflow-hidden px-6">
+      {/* 相手の発言。直近数行だけが残る。
+          通話は読み返せない、というのが展示の中身なので、溢れた分は捨ててよい。
+          ただし捨てる向きが逆だと、いま聞いたばかりの一言が下端で切れる。
+          判断に必要なのは最新の発言なので、下に寄せて古いほうから消す。 */}
+      <div className="flex min-h-0 flex-1 flex-col justify-end overflow-hidden px-6">
         <AnimatePresence initial={false}>
           {recent.map((item) => (
             <motion.p
