@@ -27,9 +27,47 @@ const TRANSITION_MS = 650;
 /** 選択待ち中に周囲の発言が流れる間隔（第4展示室） */
 const AMBIENT_MS = 2600;
 
-function typingDurationFor(message: Message): number {
+/**
+ * 通話（第3展示室）の話す速さ。
+ *
+ * チャットは読み返せるので、次の1通が来るまでの間は「相手が打っている時間」で足りる。
+ * 通話は違う。画面に残るのは直近3発言だけで、消えたら二度と読めない。
+ * それなのに配信間隔をチャットと同じ式にしていたため、実測で 38.5字/秒 ——
+ * 黙読（およそ9字/秒）の4倍、音読（およそ5字/秒）の8倍の速さで流れていた。
+ * 読み終える前に消えるので、何を言われたのか分からないまま選択を迫られる。
+ *
+ * 急かされること自体は展示物だが、それは「読めたうえで急かされる」ことであって、
+ * 「読めない」ことではない。人が声に出して話す速さに合わせる。
+ */
+const CALL_CHARS_PER_SEC = 6.5;
+/** 短い一言（「はい」など）でも、これだけは画面に置く */
+const CALL_DWELL_MIN_MS = 1500;
+/** 万一の長文で止まって見えないように上限を置く */
+const CALL_DWELL_MAX_MS = 12000;
+/** 話し始めるまでの息継ぎ。相手の言葉の長さとは関係がないので一定 */
+const CALL_GAP_MS = 700;
+
+/** 次の1通が出るまでの「間」。相手が打つ／話し始めるまでの時間 */
+function gapBefore(message: Message): number {
+  // 通話は「打っている」わけではないので、長さに比例させない
+  if (message.surface === 'call') return CALL_GAP_MS;
   const len = message.body.length + (message.media ? 20 : 0);
   return Math.min(TYPING_MAX_MS, Math.max(TYPING_MIN_MS, len * TYPING_PER_CHAR_MS));
+}
+
+/**
+ * いま出ている1通を、読む／聞くのに要る時間。
+ *
+ * 次の1通の長さではなく、目の前にある1通の長さで決める。
+ * 以前は「次の1通の入力時間」だけが間隔だったので、長い台詞のあとに
+ * 短い台詞が続くと 0.65 秒で流れていた。
+ *
+ * チャットとグループは画面に残り、さかのぼって読めるので 0 のまま（従来どおり）。
+ */
+function dwellAfter(message: Message | null): number {
+  if (!message || message.surface !== 'call') return 0;
+  const ms = (message.body.length / CALL_CHARS_PER_SEC) * 1000;
+  return Math.min(CALL_DWELL_MAX_MS, Math.max(CALL_DWELL_MIN_MS, Math.round(ms)));
 }
 
 function clamp(value: number, min: number, max: number): number {
@@ -88,6 +126,12 @@ export type RunnerOptions = {
    * 体験のペースは来館者が選べる（SPEC.md §3.5）。
    */
   ambientIntervalMs?: number | null;
+  /**
+   * 配信の間の倍率。1 が標準（絶叫モード）、大きいほどゆっくり。
+   * じっくり観察モードは制限時間だけでなく、話す速さも落とす
+   * （落ちていなかったので、ゆっくり見たい人が実際にはゆっくり見られなかった）。
+   */
+  paceScale?: number;
 };
 
 export function useScenarioRunner(
@@ -96,6 +140,7 @@ export function useScenarioRunner(
 ): ScenarioRunner {
   const ambientInterval =
     options.ambientIntervalMs === undefined ? AMBIENT_MS : options.ambientIntervalMs;
+  const paceScale = options.paceScale ?? 1;
   const beatMap = useMemo(
     () => new Map<string, Beat>(scenario.beats.map((b) => [b.id, b])),
     [scenario],
@@ -129,6 +174,12 @@ export function useScenarioRunner(
    */
   const accepting = useRef(false);
   const nextKey = (prefix: string) => `${prefix}#${seq.current++}`;
+
+  /**
+   * 直前に画面へ出した相手の1通。次の1通を出すまでに、これを読む時間を確保する。
+   * 選択したあとは「読み終えて操作した」ことになるので null に戻す。
+   */
+  const lastShown = useRef<Message | null>(null);
 
   /** 配信が終わったあとに移る先。ref で持つのは配信タイマーの中から読むため */
   const pending = useRef<Transition | null>({ kind: 'beat', id: scenario.entryBeat });
@@ -169,6 +220,7 @@ export function useScenarioRunner(
     setQueue([]);
     seq.current = 0;
     accepting.current = false;
+    lastShown.current = null;
     pending.current = { kind: 'beat', id: scenario.entryBeat };
     setPhase('transition');
   }, [scenario]);
@@ -181,7 +233,11 @@ export function useScenarioRunner(
   useEffect(() => {
     if (phase !== 'delivering' || queue.length === 0) return;
     const [next, ...rest] = queue;
+    // 「直前の1通を読み終えるまで」＋「次が始まるまでの間」。
+    // 読む時間はビートをまたいでも要るので、lastShown はビート遷移で消さない
+    const wait = Math.round((dwellAfter(lastShown.current) + gapBefore(next)) * paceScale);
     const timer = window.setTimeout(() => {
+      lastShown.current = next;
       setTranscript((prev) => [...prev, { kind: 'them', id: nextKey(next.id), message: next }]);
       setReplay((prev) => [...prev, { kind: 'them', messageId: next.id }]);
       setQueue(rest);
@@ -190,9 +246,9 @@ export function useScenarioRunner(
         accepting.current = next === 'choosing';
         setPhase(next);
       }
-    }, typingDurationFor(next));
+    }, wait);
     return () => window.clearTimeout(timer);
-  }, [phase, queue]);
+  }, [phase, queue, paceScale]);
 
   // ビート／エンディングへの遷移
   useEffect(() => {
@@ -256,6 +312,8 @@ export function useScenarioRunner(
     (choiceId: string) => {
       if (phase !== 'choosing' || !accepting.current) return;
       accepting.current = false;
+      // 操作できたということは、直前の1通はもう読み終えている
+      lastShown.current = null;
       const beat = beatMap.get(beatId);
       const choice = beat?.choices.find((c) => c.id === choiceId);
       if (!beat || !choice) return;

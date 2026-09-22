@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { PhoneFrame } from '@/components/ui/PhoneFrame';
 import { LoadingHall, RoomNotReady } from '@/components/ui/LoadingHall';
-import { PACE_INTERVAL, usePlayStore } from '@/store/usePlayStore';
+import { PACE_INTERVAL, PACE_SPEECH_SCALE, usePlayStore } from '@/store/usePlayStore';
 import type { Scenario } from './engine/types';
 import { useScenario } from './engine/useScenario';
 import { ChatSurface } from './surfaces/ChatSurface';
@@ -29,7 +29,10 @@ function Runner({ scenario }: { scenario: Scenario }) {
   const navigate = useNavigate();
   const setResult = usePlayStore((s) => s.setResult);
   const pace = usePlayStore((st) => st.paceMode);
-  const runner = useScenarioRunner(scenario, { ambientIntervalMs: PACE_INTERVAL[pace] });
+  const runner = useScenarioRunner(scenario, {
+    ambientIntervalMs: PACE_INTERVAL[pace],
+    paceScale: PACE_SPEECH_SCALE[pace],
+  });
   const saved = useRef(false);
 
   const { phase, ending, stats, choiceLog, beat, replay } = runner;
