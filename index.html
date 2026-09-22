@@ -40,18 +40,8 @@
     />
     <meta name="twitter:image" content="%VITE_PUBLIC_ORIGIN%/ogp.png" />
 
-    <!-- フォントは自前で配っている（scripts/build-fonts.mjs が生成）。
-         最初に目に入る2つだけ先読みする。本文の Noto 400 と、
-         エントランスの大見出しに使う Zen Kaku 900。
-         残りの2つは CSS から必要になった時点で取りに行かせる。 -->
-    <link
-      rel="preload"
-      href="/fonts/noto-sans-jp-400.woff2"
-      as="font"
-      type="font/woff2"
-      crossorigin
-    />
-    <link rel="preload" href="/fonts/zen-kaku-900.woff2" as="font" type="font/woff2" crossorigin />
+    <!-- フォントの preload は vite.config.ts の preloadFonts が差し込む
+         （ファイル名にハッシュが付くので、ここには書けない） -->
   </head>
   <body>
     <div id="root"></div>

@@ -12,21 +12,21 @@
   font-style: normal;
   font-weight: 700;
   font-display: swap;
-  src: url('/fonts/zen-kaku-700.woff2') format('woff2');
+  src: url('./fonts/zen-kaku-700.woff2') format('woff2');
 }
 @font-face {
   font-family: 'Zen Kaku Gothic New';
   font-style: normal;
   font-weight: 900;
   font-display: swap;
-  src: url('/fonts/zen-kaku-900.woff2') format('woff2');
+  src: url('./fonts/zen-kaku-900.woff2') format('woff2');
 }
 @font-face {
   font-family: 'Noto Sans JP';
   font-style: normal;
   font-weight: 400;
   font-display: swap;
-  src: url('/fonts/noto-sans-jp-400.woff2') format('woff2');
+  src: url('./fonts/noto-sans-jp-400.woff2') format('woff2');
 }
 /* 600（font-semibold）もこの700に寄る。500は使っていないので持たない */
 @font-face {
@@ -34,7 +34,7 @@
   font-style: normal;
   font-weight: 700;
   font-display: swap;
-  src: url('/fonts/noto-sans-jp-700.woff2') format('woff2');
+  src: url('./fonts/noto-sans-jp-700.woff2') format('woff2');
 }
 
 @theme {

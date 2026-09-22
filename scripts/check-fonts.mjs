@@ -16,7 +16,7 @@ import { existsSync } from 'node:fs';
 import path from 'node:path';
 import { ROOT, collectCharacters, displayCharacters } from './font-charset.mjs';
 
-const FONTS = path.join(ROOT, 'public', 'fonts');
+const FONTS = path.join(ROOT, 'src', 'fonts');
 
 /**
  * woff2 に収録されている文字を読む。

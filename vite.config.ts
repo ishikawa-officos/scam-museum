@@ -44,12 +44,49 @@ ${PUBLIC_ROUTES.map(
   };
 }
 
+/**
+ * 最初に目に入るフォントだけ preload する。
+ *
+ * フォントは Vite のアセットとして出力させている（＝ファイル名にハッシュが付く）。
+ * ハッシュが無いと長期キャッシュを効かせられず、かといって名前固定で
+ * immutable にすると、文字を足して作り直したときに古い実体が残り続けて
+ * 豆腐になる。ハッシュ付きなら、その二律背反が消える。
+ *
+ * その代わり、index.html に preload の URL を直接書けない。ここで差し込む。
+ */
+function preloadFonts(): Plugin {
+  const WANTED = [/noto-sans-jp-400.*\.woff2$/, /zen-kaku-900.*\.woff2$/];
+  return {
+    name: 'preload-fonts',
+    apply: 'build',
+    transformIndexHtml(html, ctx) {
+      const files = Object.keys(ctx.bundle ?? {}).filter((f) =>
+        WANTED.some((re) => re.test(f)),
+      );
+      return {
+        html,
+        tags: files.map((f) => ({
+          tag: 'link',
+          attrs: {
+            rel: 'preload',
+            href: `/${f}`,
+            as: 'font',
+            type: 'font/woff2',
+            crossorigin: '',
+          },
+          injectTo: 'head' as const,
+        })),
+      };
+    },
+  };
+}
+
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '');
   const origin = (env.VITE_PUBLIC_ORIGIN ?? '').replace(/\/$/, '');
 
   return {
-    plugins: [react(), tailwindcss(), seoFiles(origin)],
+    plugins: [react(), tailwindcss(), seoFiles(origin), preloadFonts()],
     resolve: {
       alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) },
     },

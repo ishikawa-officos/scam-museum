@@ -6,13 +6,14 @@
  * 「公開のときに直すつもりだった」ものを、機械が見つける。
  * 人間のチェックリストは必ず抜けるので、抜けたら落ちる形にしておく。
  */
-import { readFile } from 'node:fs/promises';
+import { readFile, readdir } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const DIST = path.join(ROOT, 'dist');
+const assets = path.join(DIST, 'assets');
 
 const problems = [];
 const notes = [];
@@ -63,10 +64,17 @@ for (const f of ['robots.txt', 'sitemap.xml']) {
 }
 
 // 5) フォントの実体と、外部フォントへの依存が残っていないか
+const emitted = await readdir(assets).catch(() => []);
 for (const f of ['zen-kaku-700', 'zen-kaku-900', 'noto-sans-jp-400', 'noto-sans-jp-700']) {
-  if (!existsSync(path.join(DIST, 'fonts', `${f}.woff2`))) {
-    problems.push(`dist/fonts/${f}.woff2 がありません。npm run build-fonts を実行してください。`);
+  if (!emitted.some((e) => e.startsWith(f) && e.endsWith('.woff2'))) {
+    problems.push(`${f} の woff2 が dist/assets/ にありません。npm run build-fonts を実行してください。`);
   }
+}
+// preload はハッシュ付きの実体を指していないと効かない
+if (!/rel="preload"[^>]*noto-sans-jp-400[^>]*.woff2/.test(html)) {
+  problems.push('本文フォントの preload が index.html に入っていません。vite.config.ts の preloadFonts を確認してください。');
+} else {
+  notes.push('フォントの preload が出力されています。');
 }
 if (/fonts\.(googleapis|gstatic)\.com/.test(html)) {
   problems.push(
@@ -77,9 +85,7 @@ if (/fonts\.(googleapis|gstatic)\.com/.test(html)) {
 }
 
 // 6) 画面に残った制作メモ
-const assets = path.join(DIST, 'assets');
-const { readdir } = await import('node:fs/promises');
-const jsFiles = (await readdir(assets)).filter((f) => f.endsWith('.js'));
+const jsFiles = emitted.filter((f) => f.endsWith('.js'));
 let memoHit = false;
 for (const f of jsFiles) {
   const body = await readFile(path.join(assets, f), 'utf8');

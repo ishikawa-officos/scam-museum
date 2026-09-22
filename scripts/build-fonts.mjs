@@ -34,7 +34,8 @@ import path from 'node:path';
 import subsetFont from 'subset-font';
 import { ROOT, collectCharacters, displayCharacters } from './font-charset.mjs';
 
-const OUT = path.join(ROOT, 'public', 'fonts');
+const OUT = path.join(ROOT, 'src', 'fonts');
+const LICENSE_OUT = path.join(ROOT, 'public', 'fonts');
 const GF = 'https://raw.githubusercontent.com/google/fonts/main/ofl';
 
 const FACES = [
@@ -84,6 +85,7 @@ const text = { body: bodyChars.join(''), display: displayChars.join('') };
 console.log(`本文用 ${bodyChars.length} 字 ／ 見出し用 ${displayChars.length} 字\n`);
 
 await mkdir(OUT, { recursive: true });
+await mkdir(LICENSE_OUT, { recursive: true });
 
 const cache = new Map(); // 同じ原本を2回落とさない
 let total = 0;
@@ -120,7 +122,7 @@ const [zenLicense, notoLicense] = await Promise.all([
 ]);
 
 await writeFile(
-  path.join(OUT, 'OFL.txt'),
+  path.join(LICENSE_OUT, 'OFL.txt'),
   `このフォルダの woff2 は scripts/build-fonts.mjs が生成しています。手で編集しないでください。\n` +
     `本文用 ${bodyChars.length} 字 ／ 見出し用 ${displayChars.length} 字\n\n` +
     `${'='.repeat(70)}\nZen Kaku Gothic New\n${'='.repeat(70)}\n${zenLicense}\n\n` +
