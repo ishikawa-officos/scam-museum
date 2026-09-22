@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
-import { ExternalLink, FileWarning, Quote } from 'lucide-react';
+import { ExternalLink, FileWarning, Github, Quote } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { HallFooter, HallLayout } from '@/components/ui/HallLayout';
 import { HallNav } from '@/components/ui/HallNav';
 
@@ -284,6 +285,40 @@ export function AboutPage() {
             SNS型投資・ロマンス詐欺の被害額は特殊詐欺全体を大きく上回り、過去最悪の水準です。
             統計は毎年更新されるため、引用の際は最新の発表をご確認ください。
           </p>
+        </section>
+
+        {/* 制作 */}
+        <section className="mt-12">
+          <h2 className="font-display font-bold text-2xl">制作</h2>
+          <div className="mt-5 rounded-2xl border-2 border-hall-line bg-hall-surface p-6">
+            <p className="font-display text-[17px] font-bold tracking-wide">
+              kei_officos
+            </p>
+            <p className="mt-1.5 text-[12.5px] text-hall-muted">個人制作</p>
+            <p className="mt-4 text-[13.5px] leading-[1.9] text-hall-text/85">
+              この展示のソースコード、シナリオ本文、手口カードの全文は公開しています。
+              何を根拠にどう書いたかを、誰でも確かめられる状態にしておくためです。
+            </p>
+            <a
+              href="https://github.com/ishikawa-officos/scam-museum"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-4 inline-flex items-center gap-1.5 text-[13.5px] font-semibold hover:text-hall-accent"
+            >
+              <Github size={14} className="text-hall-accent" />
+              github.com/ishikawa-officos/scam-museum
+              <ExternalLink size={12} className="text-hall-accent" />
+            </a>
+            <p className="mt-5 border-t border-hall-line pt-4 text-[12.5px] leading-[1.85] text-hall-muted">
+              内容の誤り、配慮に欠ける表現、統計の古さに気づかれた場合は、
+              上記リポジトリの Issue でお知らせください。
+              個別の被害相談には応じられないため、
+              <Link to="/summary" className="text-hall-accent underline underline-offset-2">
+                相談窓口
+              </Link>
+              をご利用ください。
+            </p>
+          </div>
         </section>
 
         <HallFooter />
