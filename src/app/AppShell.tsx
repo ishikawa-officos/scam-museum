@@ -64,6 +64,26 @@ export function AppShell() {
     document.documentElement.dataset.lab = labMode;
   }, [labMode]);
 
+  /**
+   * アドレスバーのURLに、OG画像の版番号を付ける。
+   *
+   * ブラウザの共有ボタンは「いま開いているURL」をそのまま渡す。
+   * 素のURLだと、LINEが過去に取り込んだ古いカードがそのまま出る
+   * （LINEはページURL単位でOGPを丸ごとキャッシュし、画像を差し替えても
+   *   取りに来ない）。共有される前に、URL自体を新しくしておく必要がある。
+   *
+   * サイト内の共有ボタンだけ直しても意味がなかった。実際に使われるのは
+   * ブラウザの共有のほうで、そちらはアドレスバーの文字列しか見ていない。
+   *
+   * 履歴は増やさず差し替えるだけ（replaceState）なので、戻るの動作は変わらない。
+   */
+  useEffect(() => {
+    const url = new URL(window.location.href);
+    if (url.searchParams.get('v') === __OGP_VERSION__) return;
+    url.searchParams.set('v', __OGP_VERSION__);
+    window.history.replaceState(window.history.state, '', url);
+  }, [pathname]);
+
   useEffect(() => {
     const name = pageName(pathname);
     document.title = name === SITE ? SITE : `${SITE} — ${name}`;
