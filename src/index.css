@@ -287,7 +287,8 @@
   border-radius: inherit;
   padding: 1rem;
   text-align: center;
-  background: color-mix(in srgb, #0b1116 88%, transparent);
+  /* 下の文字が透けると重なって読めなくなるので、ほぼ不透明にする */
+  background: color-mix(in srgb, #0b1116 96%, transparent);
   color: #ffd9c7;
   opacity: 0;
   pointer-events: none;
@@ -299,9 +300,21 @@
     opacity: 1;
   }
 }
-/* 裏モードでは、めくるまでもなく常に出ている */
+
+/* 裏モードでは「かぶせる」のをやめ、下に並べる。
+   かぶせると展示室の名前が隠れ、順路として使えなくなる。
+   裏を見せることと、行き先が分かることは両立させる。 */
 :root[data-lab='back'] .peek-back {
+  position: static;
+  display: block;
   opacity: 1;
+  margin-top: 0.85rem;
+  border-radius: 0.6rem;
+  border: 1.5px solid color-mix(in srgb, var(--color-hall-accent) 40%, transparent);
+  background: color-mix(in srgb, var(--color-hall-accent) 10%, transparent);
+  padding: 0.55rem 0.75rem;
+  text-align: left;
+  color: var(--color-hall-accent);
 }
 
 /* チャット領域のスクロールバーを控えめに */
