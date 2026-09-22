@@ -32,6 +32,8 @@ npm run dev        # http://localhost:5173
 | `npm run build` | 本番ビルド（`dist/`） |
 | `npm run typecheck` | 型チェック |
 | `npm run make-charts` | 第1展示室のチャート画像2枚をSVGから生成（数字が展示の中身なので手描き） |
+| `npm run build-fonts` | 使う文字だけに絞ったフォントを生成（後述） |
+| `npm run check-fonts` | 本文の文字がフォントに収録されているか検査 |
 | `npm run optimize-images` | `assets-src/` の原本を `public/assets/` の webp に変換 |
 | `npm run check-assets` | シナリオが参照する画像の配置状況を確認 |
 | `npm run export-scenario` | シナリオ本文を `docs/*.md` に書き出す |
@@ -87,3 +89,28 @@ SPA のため、直リンク・リロードに `public/_redirects`（Cloudflare 
 この展示は詐欺被害の防止を目的としており、**加害の手引きにならないこと**を設計制約としている。
 登場する人物・団体・企業・サービス・URLはすべて架空。
 詳細は [SPEC.md §5](SPEC.md) を参照。
+
+## フォント
+
+フォントは自前で配っている（`public/fonts/`）。Google Fonts の `<link>` は、
+この構成だと **145KB の CSS**（アプリ本体のJSより大きい）を返したうえで
+レンダリングを止めていたため。
+
+```bash
+npm run build-fonts    # 原本を取得してサブセットを生成
+npm run check-fonts    # 本文の文字がフォントに収録されているか検査
+```
+
+日本語フォントは1ウェイト数MBあるので、**使う文字だけ**に絞っている。
+
+| | 収録範囲 | 字数 |
+|---|---|---|
+| Noto Sans JP 400 / 700（本文） | 画面に出る全文字 | 1,509 |
+| Zen Kaku Gothic New 700 / 900（見出し） | 見出しに出た漢字＋かな英数記号 | 630 |
+
+**本文に新しい漢字を足したら `npm run build-fonts` を回すこと。**
+忘れるとその字が豆腐（□）になる。`check-fonts` が検出し、`check-release` でも落ちる。
+
+見出し用の漢字一覧（`scripts/display-kanji.txt`）に漏れがあっても壊れない。
+フォントスタックが Zen Kaku → Noto Sans JP の順なので、無い字は本文用の書体で出る。
+見出しの書体を揃えたい場合だけ足せばよい。

@@ -62,7 +62,21 @@ for (const f of ['robots.txt', 'sitemap.xml']) {
   }
 }
 
-// 5) 画面に残った制作メモ
+// 5) フォントの実体と、外部フォントへの依存が残っていないか
+for (const f of ['zen-kaku-700', 'zen-kaku-900', 'noto-sans-jp-400', 'noto-sans-jp-700']) {
+  if (!existsSync(path.join(DIST, 'fonts', `${f}.woff2`))) {
+    problems.push(`dist/fonts/${f}.woff2 がありません。npm run build-fonts を実行してください。`);
+  }
+}
+if (/fonts\.(googleapis|gstatic)\.com/.test(html)) {
+  problems.push(
+    'index.html に Google Fonts への参照が残っています。セルフホストしたので外してください。',
+  );
+} else {
+  notes.push('外部フォントへの依存はありません。');
+}
+
+// 6) 画面に残った制作メモ
 const assets = path.join(DIST, 'assets');
 const { readdir } = await import('node:fs/promises');
 const jsFiles = (await readdir(assets)).filter((f) => f.endsWith('.js'));

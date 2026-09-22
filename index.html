@@ -40,12 +40,18 @@
     />
     <meta name="twitter:image" content="%VITE_PUBLIC_ORIGIN%/ogp.png" />
 
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <!-- フォントは自前で配っている（scripts/build-fonts.mjs が生成）。
+         最初に目に入る2つだけ先読みする。本文の Noto 400 と、
+         エントランスの大見出しに使う Zen Kaku 900。
+         残りの2つは CSS から必要になった時点で取りに行かせる。 -->
     <link
-      href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Zen+Kaku+Gothic+New:wght@700;900&display=swap"
-      rel="stylesheet"
+      rel="preload"
+      href="/fonts/noto-sans-jp-400.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
     />
+    <link rel="preload" href="/fonts/zen-kaku-900.woff2" as="font" type="font/woff2" crossorigin />
   </head>
   <body>
     <div id="root"></div>

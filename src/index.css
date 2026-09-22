@@ -1,5 +1,42 @@
 @import 'tailwindcss';
 
+/* ── フォント ────────────────────────────────────────────
+   自前で配っている。Google Fonts の <link> は、このサイトの構成だと
+   145KB の CSS を返したうえでレンダリングを止めていた（アプリ本体のJSより大きい）。
+   実体は scripts/build-fonts.mjs が生成する、使う文字だけのサブセット。
+
+   swap にしているのは、フォントが届くまで本文を隠さないため。
+   先に代替書体で読めるほうが、揃った見た目より優先する。 */
+@font-face {
+  font-family: 'Zen Kaku Gothic New';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('/fonts/zen-kaku-700.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Zen Kaku Gothic New';
+  font-style: normal;
+  font-weight: 900;
+  font-display: swap;
+  src: url('/fonts/zen-kaku-900.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Noto Sans JP';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/noto-sans-jp-400.woff2') format('woff2');
+}
+/* 600（font-semibold）もこの700に寄る。500は使っていないので持たない */
+@font-face {
+  font-family: 'Noto Sans JP';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('/fonts/noto-sans-jp-700.woff2') format('woff2');
+}
+
 @theme {
   /* ── 館内モード（現代的な企画展）──────────────────────────
      黒×金のクラシックな博物館から、スレートネイビー×エレクトリックイエローの

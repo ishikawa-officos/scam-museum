@@ -9,8 +9,10 @@
     "preview": "vite preview",
     "typecheck": "tsc -b --force --noEmit",
     "make-charts": "node scripts/make-charts.mjs",
+    "build-fonts": "node scripts/build-fonts.mjs",
     "optimize-images": "node scripts/optimize-images.mjs",
     "check-assets": "node scripts/check-assets.mjs",
+    "check-fonts": "node scripts/check-fonts.mjs",
     "export-scenario": "node --experimental-strip-types --no-warnings scripts/export-scenario.mjs",
     "check-release": "node scripts/check-release.mjs"
   },
@@ -29,6 +31,7 @@
     "@types/react-dom": "^18.3.1",
     "@vitejs/plugin-react": "^6.1.1",
     "sharp": "^0.35.4",
+    "subset-font": "^2.9.0",
     "tailwindcss": "^4.0.0",
     "typescript": "^5.6.3",
     "vite": "^8.3.0"
