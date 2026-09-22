@@ -114,3 +114,23 @@ npm run check-fonts    # 本文の文字がフォントに収録されている�
 見出し用の漢字一覧（`scripts/display-kanji.txt`）に漏れがあっても壊れない。
 フォントスタックが Zen Kaku → Noto Sans JP の順なので、無い字は本文用の書体で出る。
 見出しの書体を揃えたい場合だけ足せばよい。
+
+## ブランド画像（アイコンとOGP）
+
+```bash
+npm run make-brand-images
+```
+
+`assets-src/common/dr-bug.png` から生成する。
+
+| 出力 | 用途 |
+|---|---|
+| `public/icon-32.png` / `icon-192.png` | タブのアイコン |
+| `public/apple-touch-icon.png` | iOSのホーム画面 |
+| `public/ogp.png` | LINE・X などにリンクを貼ったときの画像 |
+
+ファビコンは**顔だけ**を切り出している。全身を32pxに縮めると何が描いてあるか
+分からなくなるが、顔だけなら「左右で違う」ことが小さくても読み取れる。
+
+OGPは画像生成AIではなくSVGから組んでいる。日本語の字形が崩れず、
+文言やドメインを変えたときに作り直せるため。

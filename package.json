@@ -9,6 +9,7 @@
     "preview": "vite preview",
     "typecheck": "tsc -b --force --noEmit",
     "make-charts": "node scripts/make-charts.mjs",
+    "make-brand-images": "node scripts/make-brand-images.mjs",
     "build-fonts": "node scripts/build-fonts.mjs",
     "optimize-images": "node scripts/optimize-images.mjs",
     "check-assets": "node scripts/check-assets.mjs",

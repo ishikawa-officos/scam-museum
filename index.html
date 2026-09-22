@@ -3,7 +3,16 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <meta name="theme-color" content="#0f172a" />
+    <!-- ブラウザのUIに乗る色。館内モードの表の顔と合わせる -->
+    <meta name="theme-color" content="#eaf5f1" />
+
+    <!-- タブのアイコンとホーム画面のアイコン。Dr.バグの顔だけを使う。
+         全身を 32px に縮めると何が描いてあるか分からなくなるが、
+         顔だけなら「左右で違う」ことが小さくても読み取れる。
+         実体は scripts/make-brand-images.mjs が生成する。 -->
+    <link rel="icon" type="image/png" sizes="32x32" href="/icon-32.png" />
+    <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 
     <title>だまされる博物館 — ようこそ、安心して騙される場所へ</title>
     <meta
@@ -22,7 +31,7 @@
 
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="だまされる博物館" />
-    <meta property="og:title" content="だまされる博物館 — ようこそ、安心して騙される場所へ" />
+    <meta property="og:title" content="だまされる博物館｜認知バイアス臨床実験室" />
     <meta
       property="og:description"
       content="実際に使われている詐欺の手口を、一円も失わずに体験できる展示。全4室。あの罠、たぶんあなたも見抜けません。"
@@ -33,7 +42,7 @@
     <meta property="og:locale" content="ja_JP" />
 
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="だまされる博物館 — ようこそ、安心して騙される場所へ" />
+    <meta name="twitter:title" content="だまされる博物館｜認知バイアス臨床実験室" />
     <meta
       name="twitter:description"
       content="実際に使われている詐欺の手口を、一円も失わずに体験できる展示。全4室。あの罠、たぶんあなたも見抜けません。"

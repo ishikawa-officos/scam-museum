@@ -52,6 +52,19 @@ if (!existsSync(path.join(DIST, 'ogp.png'))) {
   notes.push('OG画像 dist/ogp.png があります。');
 }
 
+// 3b) タブとホーム画面のアイコン
+//     index.html から参照しているのに実体が無いと、既定の白紙アイコンになる
+for (const f of ['icon-32.png', 'icon-192.png', 'apple-touch-icon.png']) {
+  if (!existsSync(path.join(DIST, f))) {
+    problems.push(`dist/${f} がありません。npm run make-brand-images を実行してください。`);
+  }
+}
+if (!/rel="icon"/.test(html)) {
+  problems.push('index.html にファビコンの指定がありません。');
+} else {
+  notes.push('ファビコンとホーム画面アイコンがあります。');
+}
+
 // 4) robots.txt と sitemap.xml
 //    SPAなので、無いと index.html がフォールバックで返り、
 //    クローラーは robots.txt としてHTMLを読むことになる
