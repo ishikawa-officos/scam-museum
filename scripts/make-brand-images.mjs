@@ -120,6 +120,11 @@ const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" 
   </g>
 </svg>`;
 
-const ogp = await sharp(Buffer.from(svg), { density: 96 }).png({ quality: 92 }).toBuffer();
+// density を上げると librsvg が SVG の指定サイズごと拡大する（96/72 倍）。
+// メタタグに書いた 1200×630 と実体がずれるので、最後に明示して合わせる。
+const ogp = await sharp(Buffer.from(svg), { density: 192 })
+  .resize(W, H)
+  .png({ quality: 92 })
+  .toBuffer();
 await writeFile(path.join(OUT, 'ogp.png'), ogp);
 console.log(`  ogp.png  ${W}×${H}  ${(ogp.length / 1024).toFixed(0)}KB`);

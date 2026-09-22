@@ -45,11 +45,26 @@ if (/name="robots"[^>]*noindex/.test(html)) {
   notes.push('noindex は外れています。');
 }
 
-// 3) OG画像の実体
+// 3) OG画像の実体と、宣言した寸法との一致
+//    og:image:width / height は多くのSNSが先に読む。
+//    実体とずれていると、表示の組み立てを誤らせる
 if (!existsSync(path.join(DIST, 'ogp.png'))) {
   problems.push('dist/ogp.png がありません。OG画像が配信されません。');
 } else {
-  notes.push('OG画像 dist/ogp.png があります。');
+  const sharp = (await import('sharp')).default;
+  const meta = await sharp(path.join(DIST, 'ogp.png')).metadata();
+  const declared = {
+    w: Number(html.match(/og:image:width"\s+content="(\d+)"/)?.[1]),
+    h: Number(html.match(/og:image:height"\s+content="(\d+)"/)?.[1]),
+  };
+  if (meta.width !== declared.w || meta.height !== declared.h) {
+    problems.push(
+      `OG画像の寸法が宣言と違います。実体 ${meta.width}×${meta.height} / 宣言 ${declared.w}×${declared.h}。` +
+        ' npm run make-brand-images を実行するか、index.html の og:image:width/height を直してください。',
+    );
+  } else {
+    notes.push(`OG画像 ${meta.width}×${meta.height}、宣言と一致しています。`);
+  }
 }
 
 // 3b) タブとホーム画面のアイコン
