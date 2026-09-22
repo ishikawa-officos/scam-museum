@@ -1,13 +1,13 @@
-import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Check, Copy, Share2, ShieldCheck } from 'lucide-react';
+import { ShieldCheck } from 'lucide-react';
 import { ROOMS } from '@/content/scenarios';
 import { HallFooter, HallLayout } from '@/components/ui/HallLayout';
 import { HallNav } from '@/components/ui/HallNav';
 import { usePlayStore } from '@/store/usePlayStore';
 import { AXES, buildShareText, diagnose, shareUrl, type AxisId } from './diagnosis';
 import { DrBug } from '@/components/ui/DrBug';
+import { ShareButton } from '@/components/ui/ShareButton';
 
 const AXIS_ORDER: AxisId[] = ['affection', 'authority', 'conformity', 'sunkCost'];
 
@@ -15,29 +15,12 @@ const AXIS_ORDER: AxisId[] = ['affection', 'authority', 'conformity', 'sunkCost'
 export function DiagnosisPage() {
   const navigate = useNavigate();
   const records = usePlayStore((s) => s.records);
-  const [copied, setCopied] = useState(false);
 
   const diagnosis = diagnose(records);
   const readyRooms = ROOMS.filter((r) => r.status === 'ready');
   const remaining = readyRooms.filter((r) => r.scenarioId && !records[r.scenarioId]);
 
   const shareText = buildShareText(diagnosis, shareUrl(window.location.origin));
-  // 端末の共有シートが使えるか（スマホは使える、PCのブラウザは大体使えない）
-  const canShare = typeof navigator !== 'undefined' && 'share' in navigator;
-
-  const share = async () => {
-    try {
-      if (canShare) {
-        await navigator.share({ text: shareText });
-        return;
-      }
-      await navigator.clipboard.writeText(shareText);
-      setCopied(true);
-      window.setTimeout(() => setCopied(false), 2400);
-    } catch {
-      // 共有シートを閉じた・権限が無い等。何も起こさないのが正しい
-    }
-  };
 
   if (diagnosis.playedRooms === 0) {
     return (
@@ -197,13 +180,12 @@ export function DiagnosisPage() {
             「お金は一円も減らない体験型の展示」であることを必ず添えています。
           </p>
 
-          <button
-            onClick={share}
-            className="btn-pop mt-4 inline-flex items-center gap-2.5 bg-hall-accent px-6 py-3.5 font-display text-[14px] font-black text-hall-on-accent"
-          >
-            {copied ? <Check size={16} /> : canShare ? <Share2 size={16} /> : <Copy size={16} />}
-            {copied ? 'コピーしました' : canShare ? '［ 挑戦状を送る ］' : '［ 挑戦状をコピー ］'}
-          </button>
+          <ShareButton
+            text={shareText}
+            label="［ 挑戦状を送る ］"
+            tone="accent"
+            className="mt-4"
+          />
         </section>
 
         <div className="mt-10 flex flex-col gap-3 sm:flex-row">

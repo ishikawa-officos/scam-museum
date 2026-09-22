@@ -7,6 +7,9 @@ import { HallFooter, HallLayout } from '@/components/ui/HallLayout';
 import { LoadingHall } from '@/components/ui/LoadingHall';
 import { RichText } from '@/components/ui/RichText';
 import { usePlayStore } from '@/store/usePlayStore';
+import { ShareButton } from '@/components/ui/ShareButton';
+import { ROOMS } from '@/content/scenarios';
+import { buildRoomShareText, roomUrl } from '@/lib/share';
 
 /**
  * 結果の口上。
@@ -114,6 +117,12 @@ export function ResultPage() {
   const key = profit ? 'PROFIT' : grade === 'A_AVOIDED' && net > 0 ? 'A_AVOIDED_HURT' : grade;
   const verdict = VERDICT[key] ?? VERDICT.C_MINOR;
   const amount = useCountUp(Math.abs(net));
+
+  // この部屋を誰かに渡すための文面。自分の結果を添えると挑戦状になる
+  const room = ROOMS.find((r) => r.scenarioId === scenarioId);
+  const shareText = room
+    ? buildRoomShareText(room, roomUrl(window.location.origin, room.scenarioId!), net)
+    : '';
 
   if (status === 'loading') return <LoadingHall />;
 
@@ -237,6 +246,30 @@ export function ResultPage() {
             className="shrink-0 text-hall-accent transition group-hover:translate-x-0.5"
           />
         </button>
+
+        {/* この部屋を誰かに渡す。
+            「うちの親、これ絶対やられる」と思うのはここなので、その場で渡せるようにする。
+            部屋ごとのURLは前からあったが画面のどこにも出ていなかったので、
+            誰も気づけなかった。宛先は入室前の説明（/briefing）。
+            いきなり会話の途中に落とすと、自分が誰なのか分からないまま始まってしまう */}
+        {room && (
+          <section className="mt-6 rounded-2xl border-2 border-hall-line bg-hall-surface/60 p-5">
+            <h2 className="font-display font-bold text-[15px]">この部屋を、誰かに渡す</h2>
+            <p className="mt-2 text-[13px] leading-[1.9] text-hall-muted">
+              「気をつけてね」より、同じ目にあってもらうほうが早く伝わります。
+              とくに、離れて暮らす家族に。
+            </p>
+            <pre className="mt-3.5 whitespace-pre-wrap rounded-xl border border-hall-line bg-hall-bg/40 p-4 font-sans text-[12.5px] leading-[1.9] text-hall-text/85">
+              {shareText}
+            </pre>
+            <ShareButton
+              text={shareText}
+              label="［ この部屋を送る ］"
+              tone="accent"
+              className="mt-3.5 w-full sm:w-auto"
+            />
+          </section>
+        )}
 
         <div className="mt-6 flex flex-col gap-3 sm:flex-row">
           <button
