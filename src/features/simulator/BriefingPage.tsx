@@ -1,6 +1,6 @@
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ChevronLeft, EyeOff, MessageSquare, Wallet } from 'lucide-react';
+import { ChevronDown, ChevronLeft, EyeOff, MessageSquare, Wallet } from 'lucide-react';
 import { HallFooter, HallLayout } from '@/components/ui/HallLayout';
 import { LoadingHall } from '@/components/ui/LoadingHall';
 import { useScenario } from './engine/useScenario';
@@ -65,7 +65,24 @@ export function BriefingPage() {
           </div>
         </section>
 
-        <section className="mt-6 space-y-3">
+        {/* 入口は、読み物の下ではなく、必要なものを読んだ直後に置く。
+            「この部屋でのあなた」までは体験に要るので、たたまない。
+            操作方法とペース設定は、知りたい人だけが開けばよい */}
+        <button
+          onClick={() => navigate(`/play/${scenario.id}`)}
+          className="btn-pop mt-7 w-full bg-hall-accent py-4 font-display text-[16px] font-black text-hall-on-accent"
+        >
+          ［ 中に入る ］
+        </button>
+
+        <details className="mt-7 rounded-xl border border-hall-line/70 [&[open]>summary>svg]:rotate-180">
+          <summary className="flex cursor-pointer list-none items-center gap-2 p-4 text-[13.5px] font-bold text-hall-muted hover:text-hall-text">
+            <ChevronDown size={16} className="shrink-0 transition-transform" aria-hidden />
+            操作方法と、体験のペースを設定する
+          </summary>
+
+          <div className="border-t border-hall-line/70 p-4 pt-5">
+        <section className="space-y-3">
           <h2 className="text-[12px] tracking-[0.2em] text-hall-muted">できること</h2>
           <div className="flex gap-3 rounded-lg border border-hall-line/70 p-4">
             <MessageSquare size={17} className="mt-0.5 shrink-0 text-hall-accent" />
@@ -88,7 +105,7 @@ export function BriefingPage() {
         </section>
 
         <p className="mt-6 text-[12.5px] leading-relaxed text-hall-muted">
-          時間はシナリオ内で数か月進みます。会話はいつでも左上の「←」で中断できます。
+          時間はシナリオ内で数か月進みます。会話はいつでも左上の「←」で中断できます。相手の発言を待っている間は、画面下の「次へ」で待ちを飛ばせます。
         </p>
 
         {/* 体験のペースは来館者が選べるようにする（SPEC.md §3.5 アクセシビリティ） */}
@@ -120,13 +137,8 @@ export function BriefingPage() {
             ))}
           </div>
         </fieldset>
-
-        <button
-          onClick={() => navigate(`/play/${scenario.id}`)}
-          className="btn-pop mt-9 w-full bg-hall-accent py-4 font-display text-[16px] font-black text-hall-on-accent"
-        >
-          ［ 中に入る ］
-        </button>
+          </div>
+        </details>
 
         <HallFooter />
       </motion.div>

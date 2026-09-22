@@ -57,12 +57,15 @@ export function EntrancePage() {
         transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
       >
         {/* 主役はまず Dr.バグ。顔が半分ずつ違うことに、
-            入口で気づいてもらう（気づかなくても、出口で分かる） */}
+            入口で気づいてもらう（気づかなくても、出口で分かる）。
+
+            ただし背の低い端末では、この図が入口のボタンを画面の外へ押し出す。
+            飾りが入口より優先されることはないので、そこでは小さくする */}
         <div className="flex flex-col items-center text-center">
           <AssetImage
             src="/assets/common/dr-bug.webp"
             alt="Dr.バグ。白衣を着た丸メガネの医師だが、顔の右半分は笑みを浮かべた別の誰かになっている"
-            className="w-[176px] drop-shadow-sm sm:w-[208px]"
+            className="w-[176px] drop-shadow-sm [@media(max-height:700px)]:w-[132px] sm:w-[208px]"
           />
 
           <h1 className="mt-3 font-display text-[40px] font-black leading-[1.1] tracking-tight sm:text-[52px]">
@@ -99,7 +102,28 @@ export function EntrancePage() {
           ))}
         </div>
 
-        <div className="mt-8 space-y-4 text-[15px] leading-[1.95] text-hall-text/90">
+        {/* 入口は、説明の下ではなくファーストビューに置く。
+            以前はここから 1,794px スクロールしないと入れなかった。
+            「解説を読ませるな、まず引っかからせろ」がこの館の主張なのに、
+            入口だけは 812 字の解説を通過させてから開いていた。
+            本文は1文字も削らず、順序だけを入れ替える（読みたい人は下で読める） */}
+        <Link
+          to="/rooms"
+          className="btn-pop group mt-8 inline-flex w-full items-center justify-center gap-2 whitespace-nowrap bg-hall-surface px-4 py-4 font-display text-[15px] font-black text-hall-text hover:bg-hall-paper sm:gap-3 sm:px-8 sm:text-[17px]"
+        >
+          ［ 被験者として入館する ］
+          <ArrowRight size={19} strokeWidth={2.75} className="transition group-hover:translate-x-1" />
+        </Link>
+
+        {/* 同意事項の全文は下にあるが、入る前に要る一行はここに出しておく。
+            ボタンを上げたせいで注意書きを読まずに入る、という形にはしない */}
+        <p className="mt-3 text-center text-[12px] leading-relaxed text-hall-muted">
+          登場する人物・企業・URLはすべて架空です。金銭被害の描写を含みます。
+          <br className="hidden sm:block" />
+          採点はしません。いつでもやめられます。
+        </p>
+
+        <div className="mt-9 space-y-4 text-[15px] leading-[1.95] text-hall-text/90">
           <p>
             本物の詐欺師に挑むのは危険です。だから、この館を作りました。
             展示されているのは、いま実際に使われている手口そのもの。
@@ -178,7 +202,12 @@ export function EntrancePage() {
           </ul>
         </div>
 
-        {/* 狭い端末（320px級）では、px-8 と 17px のままだと文字が2行に折り返す。
+        {/* 上と同じボタンをもう一度。最後まで読んだ人に2画面ぶん戻らせないため。
+            順路の戻るボタンを1つに絞ったのとは事情が違う。
+            あれは見た目の違う2つが同じ場所へ行って迷わせていた。
+            こちらは同じ文言・同じ行き先なので、どちらを押しても同じだと一目で分かる。
+
+            狭い端末（320px級）では、px-8 と 17px のままだと文字が2行に折り返す。
             折り返したボタンは押し間違えやすく、ピルの形も崩れるので、
             余白と文字を詰めて必ず1行に収める */}
         <Link

@@ -112,6 +112,11 @@ export type ScenarioRunner = {
   replay: ReplayItem[];
   visitedBeats: string[];
   choose: (choiceId: string) => void;
+  /**
+   * 待ちを飛ばして次の1通を出す。読み終えた人が自分で進むための操作。
+   * 選択待ち・終了後は何も起きない（選ぶのは本人なので、そこは飛ばせない）。
+   */
+  advance: () => void;
 };
 
 /**
@@ -159,6 +164,23 @@ export function useScenarioRunner(
   const [choiceLog, setChoiceLog] = useState<ChoiceLogEntry[]>([]);
   const [visitedBeats, setVisitedBeats] = useState<string[]>([]);
   const [replay, setReplay] = useState<ReplayItem[]>([]);
+
+  /**
+   * 送りのタップ。
+   *
+   * 読む速さは人によって何倍も違うのに、これまでは全行がタイマー任せで、
+   * 読み終えた人にも進む手段が無かった。速さを決め打ちするのをやめて、
+   * 待ちを飛ばす権利を渡す。
+   *
+   * 「止める」ではなく「飛ばす」だけなのが肝心で、押さなければ従来どおり
+   * 勝手に進む。急かされる感覚（第3展示室の展示物）は残る。
+   */
+  const skipping = useRef(false);
+  const [skipTick, setSkipTick] = useState(0);
+  const advance = useCallback(() => {
+    skipping.current = true;
+    setSkipTick((n) => n + 1);
+  }, []);
 
   /**
    * 表示行の連番。ループするシナリオでは同じビート・同じメッセージを再訪しうるため、
@@ -221,6 +243,7 @@ export function useScenarioRunner(
     seq.current = 0;
     accepting.current = false;
     lastShown.current = null;
+    skipping.current = false;
     pending.current = { kind: 'beat', id: scenario.entryBeat };
     setPhase('transition');
   }, [scenario]);
@@ -235,8 +258,11 @@ export function useScenarioRunner(
     const [next, ...rest] = queue;
     // 「直前の1通を読み終えるまで」＋「次が始まるまでの間」。
     // 読む時間はビートをまたいでも要るので、lastShown はビート遷移で消さない
-    const wait = Math.round((dwellAfter(lastShown.current) + gapBefore(next)) * paceScale);
+    const wait = skipping.current
+      ? 0
+      : Math.round((dwellAfter(lastShown.current) + gapBefore(next)) * paceScale);
     const timer = window.setTimeout(() => {
+      skipping.current = false;
       lastShown.current = next;
       setTranscript((prev) => [...prev, { kind: 'them', id: nextKey(next.id), message: next }]);
       setReplay((prev) => [...prev, { kind: 'them', messageId: next.id }]);
@@ -248,12 +274,15 @@ export function useScenarioRunner(
       }
     }, wait);
     return () => window.clearTimeout(timer);
-  }, [phase, queue, paceScale]);
+    // skipTick が変わると、走っているタイマーが上の cleanup で消え、
+    // wait=0 で貼り直される。これが「送り」の実体
+  }, [phase, queue, paceScale, skipTick]);
 
   // ビート／エンディングへの遷移
   useEffect(() => {
     if (phase !== 'transition') return;
     const timer = window.setTimeout(() => {
+      skipping.current = false;
       const target = pending.current;
       pending.current = null;
       if (!target) {
@@ -267,9 +296,9 @@ export function useScenarioRunner(
         return;
       }
       enterBeat(target.id);
-    }, TRANSITION_MS);
+    }, skipping.current ? 0 : TRANSITION_MS);
     return () => window.clearTimeout(timer);
-  }, [phase, enterBeat]);
+  }, [phase, enterBeat, skipTick]);
 
   /**
    * 周囲の発言（第4展示室）。
@@ -372,5 +401,6 @@ export function useScenarioRunner(
     replay,
     visitedBeats,
     choose,
+    advance,
   };
 }

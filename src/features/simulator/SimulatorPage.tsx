@@ -10,6 +10,7 @@ import { WebSurface } from './surfaces/WebSurface';
 import { CallSurface } from './surfaces/CallSurface';
 import { GroupChatSurface } from './surfaces/GroupChatSurface';
 import { ChoicePanel } from './ChoicePanel';
+import { AdvanceBar } from './AdvanceBar';
 import { useScenarioRunner } from './engine/useScenarioRunner';
 
 /** S-04 シミュレーター */
@@ -34,6 +35,8 @@ function Runner({ scenario }: { scenario: Scenario }) {
     paceScale: PACE_SPEECH_SCALE[pace],
   });
   const saved = useRef(false);
+  // 一度でも送りを押したら、案内文を短くする（毎回説明されるとうるさい）
+  const advanced = useRef(false);
 
   const { phase, ending, stats, choiceLog, beat, replay } = runner;
 
@@ -74,6 +77,10 @@ function Runner({ scenario }: { scenario: Scenario }) {
   // 着信画面は応答／拒否を画面自身が描くので、下部の選択パネルは出さない
   const callTakesChoices = beat?.call?.state === 'incoming';
 
+  // 相手の発言を待っている間だけ、選択肢と同じ場所に送りのバーを出す。
+  // 選択待ちのときは出さない（選ぶのは本人なので、そこは飛ばせない）
+  const waiting = speaking && !callTakesChoices;
+
   return (
     <PhoneFrame clock={clock} label={`${scenario.title} — 体験中のスマートフォン画面`}>
       {onGroup && beat?.group ? (
@@ -103,6 +110,15 @@ function Runner({ scenario }: { scenario: Scenario }) {
           transcript={runner.transcript}
           typing={speaking}
           onExit={exit}
+        />
+      )}
+      {waiting && (
+        <AdvanceBar
+          onAdvance={() => {
+            advanced.current = true;
+            runner.advance();
+          }}
+          showHint={!advanced.current}
         />
       )}
       {!callTakesChoices && (
