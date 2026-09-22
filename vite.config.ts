@@ -70,7 +70,18 @@ function versionOgImage(version: string): Plugin {
     name: 'version-og-image',
     apply: 'build',
     transformIndexHtml(html) {
-      return html.replace(/(content="[^"]*\/ogp\.png)"/g, `$1?v=${version}"`);
+      return (
+        html
+          .replace(/(content="[^"]*\/ogp\.png)"/g, `$1?v=${version}"`)
+          // og:url も版番号つきにする。
+          // SNSは og:url を正規のアドレスとして扱い、そちらで照合する。
+          // ここが素のURLのままだと、せっかく版番号つきで共有しても
+          // 古いカードが残っている素のURLに読み替えられてしまう。
+          //
+          // rel="canonical" は検索エンジン向けなので、素のURLのままにする。
+          // 同じページが2つのURLで索引されるのを避けるため。
+          .replace(/(<meta property="og:url" content="[^"]*\/)"/, `$1?v=${version}"`)
+      );
     },
   };
 }
