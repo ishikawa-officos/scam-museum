@@ -1,34 +1,44 @@
 import { NavLink } from 'react-router-dom';
-import { BookMarked, LifeBuoy, Landmark, Sparkles } from 'lucide-react';
+import { BookMarked, DoorOpen, LifeBuoy, Landmark, Sparkles } from 'lucide-react';
 
 const ITEMS = [
+  // 入口を先頭に置く。ここが無いと、図鑑や相談窓口まで来た人に
+  // エントランスへ戻る手段が無かった（戻るボタンは順路にしか無かった）
+  { to: '/', label: 'エントランス', icon: DoorOpen, exact: true },
   { to: '/rooms', label: '順路', icon: Landmark },
   { to: '/codex', label: '仕掛け図鑑', icon: BookMarked },
   { to: '/diagnosis', label: '騙されツボ', icon: Sparkles },
   { to: '/summary', label: '相談窓口', icon: LifeBuoy },
 ];
 
-/** 館内共通ナビ。どの画面からでも図鑑と相談窓口に行けるようにする */
+/**
+ * 館内共通ナビ。どの画面からでも、入口と主要な場所へ行けるようにする。
+ *
+ * 項目が5つあるので、狭い画面では2〜3行に折り返す。
+ * 折り返したぶん本文が押し下がるので、そこでは字と余白を詰めてある。
+ */
 export function HallNav() {
   return (
     <nav
       aria-label="館内メニュー"
-      className="mb-10 flex flex-wrap items-center gap-1.5 border-b-2 border-hall-line pb-3 text-[12.5px] font-bold"
+      className="mb-7 flex flex-wrap items-center gap-x-1 gap-y-1.5 border-b-2 border-hall-line pb-3 text-[12px] font-bold sm:mb-10 sm:gap-x-1.5 sm:text-[12.5px]"
     >
-      {ITEMS.map(({ to, label, icon: Icon }) => (
+      {ITEMS.map(({ to, label, icon: Icon, exact }) => (
         <NavLink
           key={to}
           to={to}
+          end={exact}
           className={({ isActive }) =>
             [
-              'inline-flex items-center gap-1.5 rounded-full border-2 px-3.5 py-1.5 transition',
+              'inline-flex items-center gap-1 rounded-full border-2 px-3 py-1.5 transition sm:gap-1.5 sm:px-3.5',
               isActive
                 ? 'border-hall-accent bg-hall-accent text-hall-on-accent'
                 : 'border-transparent text-hall-muted hover:border-hall-line hover:text-hall-text',
             ].join(' ')
           }
         >
-          <Icon size={13} />
+          {/* アイコンは装飾。狭い画面では場所を空けるために隠す */}
+          <Icon size={13} className="hidden sm:block" aria-hidden />
           {label}
         </NavLink>
       ))}

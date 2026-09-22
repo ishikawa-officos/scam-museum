@@ -1,6 +1,6 @@
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ChevronLeft, Clock, Lock } from 'lucide-react';
+import { Clock, Lock } from 'lucide-react';
 import { ROOMS } from '@/content/scenarios';
 import { HallFooter, HallLayout } from '@/components/ui/HallLayout';
 import { HallNav } from '@/components/ui/HallNav';
@@ -9,20 +9,13 @@ import { DrBug } from '@/components/ui/DrBug';
 
 /** S-02 展示室選択 */
 export function RoomSelectPage() {
-  const navigate = useNavigate();
   const cleared = usePlayStore((s) => s.clearedEndings);
 
   return (
     <HallLayout>
+      {/* エントランスへの戻り道は館内メニューが持っている。
+          同じ画面に2つ置くと、どちらを押すか迷わせるだけ */}
       <HallNav />
-
-      <button
-        onClick={() => navigate('/')}
-        className="mb-8 inline-flex items-center gap-1 text-[13px] text-hall-muted hover:text-hall-text"
-      >
-        <ChevronLeft size={15} />
-        エントランス
-      </button>
 
       <h1 className="font-display font-bold text-3xl">順路</h1>
 
