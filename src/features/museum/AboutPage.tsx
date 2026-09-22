@@ -107,6 +107,42 @@ export function AboutPage() {
           </div>
         </section>
 
+        {/* 着想のもと */}
+        <section className="mt-12">
+          <h2 className="font-display font-bold text-2xl">着想のもと</h2>
+          <div className="mt-5 rounded-2xl border-2 border-hall-accent/45 bg-hall-accent/[0.06] p-6">
+            <a
+              href="https://amix-design.com/tl/web-darkp/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 font-display text-[17px] font-bold hover:text-hall-accent"
+            >
+              ダークパターン博物館｜だまされて、学ぼう。
+              <ExternalLink size={14} className="text-hall-accent" />
+            </a>
+            <p className="mt-1 text-[12.5px] text-hall-muted">制作：AMIX（トミナガハルキ）</p>
+            <div className="mt-4 space-y-4 text-[13.5px] leading-[1.95] text-hall-text/85">
+              <p>
+                この博物館は、ウェブサイトの「だましのUI」を実際に踏んで学ぶ展示
+                <strong className="text-hall-text">「ダークパターン博物館」</strong>
+                から着想を得ています。
+                解説を読ませるのではなく、まず引っかからせて、そのあとで種を明かす。
+                その構成に出会わなければ、このサイトは普通の注意喚起ページになっていました。
+              </p>
+              <p>
+                扱う領域は異なります。あちらは日常的に遭遇するウェブUIの設計、
+                こちらは対人コミュニケーションを使った詐欺の手口です。
+                ただ「人は説明では変わらない。体験してはじめて自分の穴に気づく」という前提は、
+                そのまま受け継いでいます。
+              </p>
+              <p className="text-hall-muted">
+                本サイトは同館とは無関係の非公式な制作物で、内容についての責任はすべて制作者にあります。
+                先に道を作ってくださったことに感謝します。
+              </p>
+            </div>
+          </div>
+        </section>
+
         {/* 設計上の約束 */}
         <section className="mt-12">
           <h2 className="font-display font-bold text-2xl">設計上の約束</h2>
