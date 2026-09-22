@@ -71,7 +71,15 @@ function Runner({ scenario }: { scenario: Scenario }) {
   const speaking = phase === 'delivering' || phase === 'transition';
   // Web は読み込み後の静止画面なので、配信が終わってから見せる。
   // 通話は相手が話している最中こそ画面に出ている必要があるので、常に表示する。
-  const onWeb = Boolean(beat?.web) && phase === 'choosing';
+  //
+  // ここを phase === 'choosing' にしていたため、Web画面で選んだ瞬間に
+  // 条件が外れ、どの面にも当たらなくなって既定のチャット画面へ落ちていた。
+  // 投資サイトを見ていたはずが、選んだ直後の1.5秒だけ、グループの発言が
+  // 個人トークとして並ぶ画面に化けていた（全展示室・Webビート14か所で発生）。
+  //
+  // 面を決めるのは phase ではなくビート。次のビートに入るまでは、
+  // いま居る面を出しておく。配信中だけは従来どおりチャットを出す。
+  const onWeb = Boolean(beat?.web) && phase !== 'delivering';
   const onCall = Boolean(beat?.call);
   const onGroup = Boolean(beat?.group);
   // 着信画面は応答／拒否を画面自身が描くので、下部の選択パネルは出さない

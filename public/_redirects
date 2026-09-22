@@ -1,3 +1,15 @@
+# 消えたビルド成果物は、素直に 404 を返す。
+#
+# 下の SPA フォールバックは「どのURLでも index.html を 200 で返す」ので、
+# 公開し直して古いファイル名が消えたあと、
+#   /assets/ResultPage-XXXX.js  →  index.html（text/html, 200）
+# が返っていた。ブラウザは HTML を JS として読もうとして失敗し、
+# 「Failed to fetch dynamically imported module」という分かりにくい形になる。
+# 実際に来館者の端末で、体験の最後にこれが出た。
+#
+# 静的ファイルが在れば、そちらが先に返る。ここに当たるのは「無い」ときだけ。
+/assets/*    /index.html   404
+
 # SPA フォールバック（Cloudflare Pages / Netlify）
 # React Router の createBrowserRouter を使っているため、これが無いと
 # /rooms や /diagnosis を直接開いた時・リロードした時に 404 になる。
