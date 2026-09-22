@@ -14,6 +14,8 @@ import { fileURLToPath } from 'node:url';
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const DIST = path.join(ROOT, 'dist');
 const assets = path.join(DIST, 'assets');
+// ビルド出力の一覧。フォント・JS・画像の確認で共通して使う
+const emitted = await readdir(assets).catch(() => []);
 
 const problems = [];
 const notes = [];
@@ -67,6 +69,46 @@ if (!existsSync(path.join(DIST, 'ogp.png'))) {
   }
 }
 
+// 3a) OG画像の版番号が、実体・HTML・JS の3者で一致しているか
+//
+//     SNSはページURL単位でOGPをキャッシュし、画像を差し替えても取りに来ない。
+//     だからURLのほうを変える必要がある。版番号は画像の中身のハッシュなので、
+//     画像を作り直せば必ず変わる——はずだが、3者のどれかが古いまま公開されると、
+//     そこだけ古いURLを指し、古いカードが出続ける。
+//
+//     これは人が気をつけて防ぐ種類のものではないので、ここで落とす。
+if (existsSync(path.join(DIST, 'ogp.png'))) {
+  const { createHash } = await import('node:crypto');
+  const bytes = await readFile(path.join(DIST, 'ogp.png'));
+  const expected = createHash('sha256').update(bytes).digest('hex').slice(0, 8);
+
+  const inHtml = {
+    'og:image': html.match(/og:image" content="[^"]*\?v=([a-f0-9]+)"/)?.[1],
+    'og:url': html.match(/og:url" content="[^"]*\?v=([a-f0-9]+)"/)?.[1],
+  };
+  const jsHits = new Set();
+  for (const f of emitted.filter((e) => e.endsWith('.js'))) {
+    const body = await readFile(path.join(assets, f), 'utf8');
+    for (const m of body.matchAll(/\?v=([a-f0-9]{8})/g)) jsHits.add(m[1]);
+  }
+
+  const wrong = Object.entries(inHtml).filter(([, v]) => v !== expected);
+  if (wrong.length > 0) {
+    problems.push(
+      `OG画像の版番号がHTMLとずれています（画像 ${expected} / ` +
+        wrong.map(([k, v]) => `${k} ${v ?? '無し'}`).join(' / ') +
+        '）。古いカードが出続けます。npm run build を実行し直してください。',
+    );
+  } else if (jsHits.size > 0 && !jsHits.has(expected)) {
+    problems.push(
+      `共有URLに埋め込まれた版番号が古いままです（画像 ${expected} / JS ${[...jsHits].join(',')}）。` +
+        'サイトから共有したURLが古いカードを指します。',
+    );
+  } else {
+    notes.push(`OG画像の版番号 ${expected} が、画像・HTML・共有URLで一致しています。`);
+  }
+}
+
 // 3b) タブとホーム画面のアイコン
 //     index.html から参照しているのに実体が無いと、既定の白紙アイコンになる
 for (const f of ['icon-32.png', 'icon-192.png', 'apple-touch-icon.png']) {
@@ -92,7 +134,6 @@ for (const f of ['robots.txt', 'sitemap.xml']) {
 }
 
 // 5) フォントの実体と、外部フォントへの依存が残っていないか
-const emitted = await readdir(assets).catch(() => []);
 for (const f of ['zen-kaku-700', 'zen-kaku-900', 'noto-sans-jp-400', 'noto-sans-jp-700']) {
   if (!emitted.some((e) => e.startsWith(f) && e.endsWith('.woff2'))) {
     problems.push(`${f} の woff2 が dist/assets/ にありません。npm run build-fonts を実行してください。`);
