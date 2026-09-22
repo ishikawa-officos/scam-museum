@@ -15,6 +15,7 @@
     "check-assets": "node scripts/check-assets.mjs",
     "check-fonts": "node scripts/check-fonts.mjs",
     "check-branches": "node --experimental-strip-types --no-warnings scripts/check-branches.mjs",
+    "check-paths": "node --experimental-strip-types --no-warnings scripts/check-paths.mjs",
     "export-scenario": "node --experimental-strip-types --no-warnings scripts/export-scenario.mjs",
     "check-release": "node scripts/check-release.mjs"
   },

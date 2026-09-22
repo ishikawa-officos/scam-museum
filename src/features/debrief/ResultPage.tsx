@@ -21,6 +21,18 @@ const VERDICT: Record<string, { tag: string; shout: string; lead: string }> = {
     shout: '無傷で出てきましたね。',
     lead: 'ただし、この館の仕掛けはまだ半分も作動していません。別の順路では、同じあなたが転びます。',
   },
+  /**
+   * 生還だが、そこまでに渡した分がある場合。
+   *
+   * 等級だけで口上を決めていたため、「失った金額 ¥30,000」のすぐ下に
+   * 「無傷で出てきましたね。」と出ていた。画面の中で矛盾している。
+   * 第1展示室で、少額を渡したあとに外部へ相談して止めた経路がこれに当たる。
+   */
+  A_AVOIDED_HURT: {
+    tag: '生還',
+    shout: '大きいほうは、止められましたね。',
+    lead: 'すでに渡した分は戻らないかもしれません。それでも、いちばん大きな一手の前で止まれたことのほうが、ここでは重要です。',
+  },
   B_LUCKY: {
     tag: 'ぎりぎり生還',
     shout: 'あと一歩で落ちていました。',
@@ -75,7 +87,11 @@ export function ResultPage() {
   const result = usePlayStore((s) => s.lastResult);
 
   const ending = scenario?.endings.find((e) => e.id === result?.endingId);
-  const verdict = VERDICT[ending?.grade ?? 'C_MINOR'] ?? VERDICT.C_MINOR;
+  // 生還でも、そこまでに渡した分がある経路がある。口上を等級だけで決めると
+  // 「失った金額 ¥30,000」の下に「無傷で出てきましたね。」と並ぶ
+  const grade = ending?.grade ?? 'C_MINOR';
+  const key = grade === 'A_AVOIDED' && (result?.stats.damage ?? 0) > 0 ? 'A_AVOIDED_HURT' : grade;
+  const verdict = VERDICT[key] ?? VERDICT.C_MINOR;
   const damage = useCountUp(result?.stats.damage ?? 0);
 
   if (status === 'loading') return <LoadingHall />;

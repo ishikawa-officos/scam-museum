@@ -173,6 +173,21 @@ if (/fonts\.(googleapis|gstatic)\.com/.test(html)) {
   }
 }
 
+// 5b) 経路を歩いて分かるずれ（時刻の逆行、選べない選択肢、等級と被害額）
+{
+  const { spawnSync } = await import('node:child_process');
+  const run = spawnSync(
+    process.execPath,
+    ['--experimental-strip-types', '--no-warnings', path.join(ROOT, 'scripts', 'check-paths.mjs')],
+    { cwd: ROOT, encoding: 'utf8' },
+  );
+  if (run.status !== 0) {
+    problems.push('経路チェックに要確認があります。npm run check-paths を実行してください。');
+  } else {
+    notes.push('全経路を歩いた結果、時刻の逆行・選べない選択肢はありません。');
+  }
+}
+
 // 6) 画面に残った制作メモ
 const jsFiles = emitted.filter((f) => f.endsWith('.js'));
 let memoHit = false;
