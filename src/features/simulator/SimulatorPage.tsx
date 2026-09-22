@@ -72,7 +72,7 @@ function Runner({ scenario }: { scenario: Scenario }) {
   const callTakesChoices = beat?.call?.state === 'incoming';
 
   return (
-    <PhoneFrame clock={clock}>
+    <PhoneFrame clock={clock} label={`${scenario.title} — 体験中のスマートフォン画面`}>
       {onGroup && beat?.group ? (
         <GroupChatSurface
           view={beat.group}

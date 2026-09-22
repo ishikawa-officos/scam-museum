@@ -13,7 +13,10 @@ export function HallLayout({ children }: { children: ReactNode }) {
             'radial-gradient(80% 40% at 50% -10%, rgba(250,204,21,0.07), transparent 70%)',
         }}
       />
-      <div className="relative mx-auto w-full max-w-2xl px-6 py-14 sm:py-20">{children}</div>
+      {/* スキップリンクの着地点であり、支援技術が本文へ一発で飛ぶための目印 */}
+      <main id="main" className="relative mx-auto w-full max-w-2xl px-6 py-14 sm:py-20">
+        {children}
+      </main>
     </div>
   );
 }

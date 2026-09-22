@@ -73,6 +73,8 @@ export function ChoicePanel({ choices, stats, onChoose, timeLimit }: Props) {
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: 24, opacity: 0 }}
           transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+          role="group"
+          aria-label="返信を選ぶ"
           className="shrink-0 space-y-1.5 border-t border-black/10 bg-white px-3 pb-3 pt-2.5"
         >
           {timeLimit && (

@@ -4,6 +4,8 @@ import { BatteryFull, Signal, Wifi } from 'lucide-react';
 type Props = {
   /** ステータスバーに出す時刻（シナリオ内時刻） */
   clock?: string;
+  /** 支援技術向けの画面名。見出しとしては出さず、読み上げにだけ使う */
+  label?: string;
   children: ReactNode;
 };
 
@@ -13,9 +15,13 @@ type Props = {
  * - スマホ実機：筐体の装飾を消し、画面いっぱいに中身を出す（体験の没入を優先）
  * - PC：暗い展示室背景の中央に、縁のある端末として描画する
  */
-export function PhoneFrame({ clock = '9:41', children }: Props) {
+export function PhoneFrame({ clock = '9:41', label, children }: Props) {
   return (
-    <div className="flex min-h-[100dvh] w-full items-center justify-center bg-hall-bg sm:p-6">
+    <main
+      id="main"
+      aria-label={label}
+      className="flex min-h-[100dvh] w-full items-center justify-center bg-hall-bg sm:p-6"
+    >
       {/* 展示室の空気感：PCでのみ見える淡いスポットライト */}
       <div
         aria-hidden
@@ -58,6 +64,6 @@ export function PhoneFrame({ clock = '9:41', children }: Props) {
           <div aria-hidden className="h-1 w-32 rounded-full bg-black/25" />
         </div>
       </div>
-    </div>
+    </main>
   );
 }

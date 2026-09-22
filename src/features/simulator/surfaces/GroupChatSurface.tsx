@@ -104,7 +104,13 @@ export function GroupChatSurface({ view, speakers, transcript, typing, onExit }:
       </header>
 
       {/* 発言 */}
-      <div className="thin-scroll min-h-0 flex-1 space-y-2 overflow-y-auto px-3 py-3">
+      <div
+        role="log"
+        aria-live="polite"
+        aria-relevant="additions"
+        aria-label={`${view.name} の発言`}
+        className="thin-scroll min-h-0 flex-1 space-y-2 overflow-y-auto px-3 py-3"
+      >
         <AnimatePresence initial={false}>
           {transcript.map((item, index) => {
             if (item.kind === 'time') {
@@ -121,6 +127,7 @@ export function GroupChatSurface({ view, speakers, transcript, typing, onExit }:
               return (
                 <motion.div key={item.id} {...bubbleMotion} className="flex justify-end pl-12">
                   <div className="rounded-xl rounded-br-sm bg-app-me px-3 py-2 text-[14px] leading-relaxed shadow-sm">
+                    <span className="sr-only">自分：</span>
                     {item.body}
                   </div>
                 </motion.div>
@@ -179,6 +186,7 @@ export function GroupChatSurface({ view, speakers, transcript, typing, onExit }:
         <AnimatePresence>
           {typing && (
             <motion.div
+              aria-hidden="true"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}

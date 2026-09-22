@@ -2,6 +2,7 @@ import { lazy, Suspense, type ReactNode } from 'react';
 import { createBrowserRouter, Navigate } from 'react-router-dom';
 import { EntrancePage } from '@/features/museum/EntrancePage';
 import { LoadingHall } from '@/components/ui/LoadingHall';
+import { AppShell } from './AppShell';
 
 /**
  * エントランス（S-01）だけは即座に出したいので静的に読み込み、
@@ -41,6 +42,9 @@ function withSuspense(node: ReactNode) {
 }
 
 export const router = createBrowserRouter([
+  {
+    element: <AppShell />,
+    children: [
   { path: '/', element: <EntrancePage /> }, // S-01
   { path: '/rooms', element: withSuspense(<RoomSelectPage />) }, // S-02
   { path: '/briefing/:scenarioId', element: withSuspense(<BriefingPage />) }, // S-03
@@ -51,5 +55,7 @@ export const router = createBrowserRouter([
   { path: '/summary', element: withSuspense(<SummaryPage />) }, // S-08
   { path: '/about', element: withSuspense(<AboutPage />) }, // S-09
   { path: '/diagnosis', element: withSuspense(<DiagnosisPage />) }, // S-10
-  { path: '*', element: <Navigate to="/" replace /> },
+      { path: '*', element: <Navigate to="/" replace /> },
+    ],
+  },
 ]);

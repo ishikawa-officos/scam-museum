@@ -147,8 +147,18 @@ export function ChatSurface({ contact, transcript, typing, onExit }: Props) {
         <MoreVertical size={19} className="text-black/40" aria-hidden />
       </header>
 
-      {/* 会話 */}
-      <div className="thin-scroll min-h-0 flex-1 space-y-2 overflow-y-auto px-3 py-4">
+      {/* 会話
+          role="log" + aria-live="polite" が無いと、スクリーンリーダーの利用者には
+          相手のメッセージが一切読み上げられない。この展示は中身のすべてが
+          動的に届くテキストなので、読み上げられないことは展示が無いのと同じ。
+          additions だけを見るのは、既に読んだ分を再度読ませないため。 */}
+      <div
+        role="log"
+        aria-live="polite"
+        aria-relevant="additions"
+        aria-label={`${contact.displayName} との会話`}
+        className="thin-scroll min-h-0 flex-1 space-y-2 overflow-y-auto px-3 py-4"
+      >
         <AnimatePresence initial={false}>
           {transcript.map((item) => {
             if (item.kind === 'time') {
@@ -165,6 +175,9 @@ export function ChatSurface({ contact, transcript, typing, onExit }: Props) {
               return (
                 <motion.div key={item.id} {...bubbleMotion} className="flex justify-end pl-12">
                   <div className="rounded-2xl rounded-br-md bg-app-me px-3.5 py-2 text-[14.5px] leading-relaxed shadow-sm">
+                    {/* 誰の発言かは、画面では左右の位置と色で分かる。
+                        読み上げでは分からないので、話者を言葉で添える */}
+                    <span className="sr-only">自分：</span>
                     {item.body}
                   </div>
                 </motion.div>
@@ -174,6 +187,7 @@ export function ChatSurface({ contact, transcript, typing, onExit }: Props) {
             return (
               <motion.div key={item.id} {...bubbleMotion} className="flex items-end">
                 <div className="max-w-[82%] rounded-2xl rounded-bl-md bg-app-them px-3.5 py-2 text-[14.5px] leading-relaxed shadow-sm">
+                  <span className="sr-only">{contact.displayName}：</span>
                   <p className="whitespace-pre-wrap">{item.message.body}</p>
                   {item.message.media && <MediaBlock media={item.message.media} />}
                 </div>
@@ -182,10 +196,13 @@ export function ChatSurface({ contact, transcript, typing, onExit }: Props) {
           })}
         </AnimatePresence>
 
-        {/* タイピングインジケータ */}
+        {/* タイピングインジケータ。
+            点が3つ動くだけなので読み上げる内容が無い。live 領域の中にあると
+            「空の追加」を拾わせてしまうため、支援技術からは隠す */}
         <AnimatePresence>
           {typing && (
             <motion.div
+              aria-hidden="true"
               initial={{ opacity: 0, y: 6 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0 }}
