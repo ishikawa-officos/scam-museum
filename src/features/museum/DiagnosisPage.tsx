@@ -172,7 +172,7 @@ export function DiagnosisPage() {
                 <button
                   key={r.roomLabel}
                   onClick={() => navigate(`/briefing/${r.scenarioId}`)}
-                  className="rounded-full border border-hall-line px-4 py-2 text-[12.5px] transition hover:border-hall-accent/60"
+                  className="rounded-xl border border-hall-line px-4 py-2 text-left text-[12.5px] leading-relaxed transition hover:border-hall-accent/60"
                 >
                   {r.roomLabel}「{r.title}」
                 </button>

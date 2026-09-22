@@ -9,15 +9,18 @@ export function HallLayout({ children }: { children: ReactNode }) {
       {/* 上端の警告テープ。清潔な研究所に一本だけ走る、立入禁止の帯 */}
       <div aria-hidden className="lab-tape pointer-events-none fixed inset-x-0 top-0 z-10 h-2.5" />
 
-      {/* 右上に常駐する「裏」への切り替え。
-          ホバーの無い端末でも二面性に触れられるようにするため */}
-      <div className="pointer-events-none fixed inset-x-0 top-0 z-20 flex justify-end p-3">
-        <div className="pointer-events-auto">
+      {/* 「裏」への切り替え。ホバーの無い端末でも二面性に触れられるようにする。
+
+          スマホでは固定しない。本文が画面幅いっぱいなので、右上に浮かせると
+          読んでいる最中ずっと文字を覆ってしまう（実機で吹き出しが欠けていた）。
+          画面の広いPCでは本文の外側に置けるので、そちらでだけ固定する。 */}
+      <div className="relative z-20 mx-auto flex w-full max-w-2xl justify-end px-6 pt-5 sm:pointer-events-none sm:fixed sm:inset-x-0 sm:max-w-none sm:px-3 sm:pt-3">
+        <div className="sm:pointer-events-auto">
           <LabModeSwitch />
         </div>
       </div>
       {/* スキップリンクの着地点であり、支援技術が本文へ一発で飛ぶための目印 */}
-      <main id="main" className="relative mx-auto w-full max-w-2xl px-6 pb-14 pt-16 sm:pb-20 sm:pt-20">
+      <main id="main" className="relative mx-auto w-full max-w-2xl px-6 pb-14 pt-4 sm:pb-20 sm:pt-20">
         {children}
       </main>
     </div>

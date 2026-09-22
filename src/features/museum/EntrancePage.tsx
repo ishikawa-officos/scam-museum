@@ -178,9 +178,12 @@ export function EntrancePage() {
           </ul>
         </div>
 
+        {/* 狭い端末（320px級）では、px-8 と 17px のままだと文字が2行に折り返す。
+            折り返したボタンは押し間違えやすく、ピルの形も崩れるので、
+            余白と文字を詰めて必ず1行に収める */}
         <Link
           to="/rooms"
-          className="btn-pop group mt-9 inline-flex w-full items-center justify-center gap-3 bg-hall-surface px-8 py-4 font-display text-[17px] font-black text-hall-text hover:bg-hall-paper"
+          className="btn-pop group mt-9 inline-flex w-full items-center justify-center gap-2 whitespace-nowrap bg-hall-surface px-4 py-4 font-display text-[15px] font-black text-hall-text hover:bg-hall-paper sm:gap-3 sm:px-8 sm:text-[17px]"
         >
           ［ 被験者として入館する ］
           <ArrowRight size={19} strokeWidth={2.75} className="transition group-hover:translate-x-1" />
