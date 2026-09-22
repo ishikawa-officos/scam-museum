@@ -142,7 +142,7 @@ export function ResultPage() {
           initial={{ scale: 0.96, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-          className="relative mt-8 overflow-hidden rounded-2xl border-2 border-hall-line bg-hall-surface p-8 text-center"
+          className="relative mt-8 overflow-hidden rounded-2xl border-2 border-hall-line bg-hall-surface p-6 text-center sm:p-8"
         >
           {/* 被害が出たときだけ、赤い光が一度だけ走る */}
           {net > 0 && (
@@ -167,7 +167,10 @@ export function ResultPage() {
             animate={{ scale: [0.8, 1.08, 1] }}
             transition={{ duration: 1.5, times: [0, 0.6, 1], ease: 'easeOut' }}
             className={[
-              'relative font-display font-bold text-[54px] leading-tight tabular-nums sm:text-6xl',
+              // 320px では ¥18,000,000 が 276px あり、カードの内側 224px に入らず割れていた。
+              // 「＋」だけが別の行に落ちることもあった。幅に合わせて字のほうを縮める
+              'relative whitespace-nowrap font-display font-bold leading-tight tabular-nums',
+              'text-[clamp(34px,calc((100vw-96px)/5.3),54px)] sm:text-6xl',
               net > 0 ? 'text-rose-400' : profit ? 'text-hall-mint' : 'text-hall-text',
             ].join(' ')}
           >
@@ -177,7 +180,7 @@ export function ResultPage() {
             経過日数 {result.stats.days} 日／一線を越えた操作{' '}
             {result.irreversibleChoices.length} 回
           </p>
-          <p className="relative mt-5 whitespace-pre-line border-t border-hall-line pt-5 font-display font-bold text-[19px] leading-relaxed text-hall-text">
+          <p className="relative mt-5 whitespace-pre-line border-t border-hall-line pt-5 font-display font-bold text-[clamp(15px,5.8vw,19px)] leading-relaxed text-hall-text">
             {verdict.shout}
           </p>
           <p className="relative mt-3 text-[13.5px] leading-[1.9] text-hall-muted">
