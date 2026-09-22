@@ -40,7 +40,7 @@ export function RoomSelectPage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.08, duration: 0.45 }}
               className={[
-                'rounded-2xl border-2 p-5 transition',
+                'peek overflow-hidden rounded-2xl border-2 p-5 transition',
                 isReady
                   ? 'border-hall-line bg-hall-surface hover:-translate-y-0.5 hover:border-hall-accent'
                   : 'border-hall-line/50 bg-hall-surface/30',
@@ -80,6 +80,14 @@ export function RoomSelectPage() {
                   <span className="pill">準備中</span>
                 )}
               </div>
+
+              {/* 裏の顔。この部屋が何を突いてくるのかを、臨床の言葉で先に言う。
+                  主語は「脳」であって「あなた」ではない */}
+              {isReady && (
+                <span className="peek-back px-6 text-[13px] font-bold leading-relaxed">
+                  {room.bias}
+                </span>
+              )}
             </motion.div>
           );
 

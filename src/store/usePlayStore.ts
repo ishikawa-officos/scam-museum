@@ -3,6 +3,7 @@ import { persist } from 'zustand/middleware';
 import type { ReplayItem, Stats } from '@/features/simulator/engine/types';
 
 export type PaceMode = 'thrill' | 'slow' | 'manual';
+export type LabMode = 'front' | 'back';
 
 /** 選択待ち中に周囲の発言が流れる間隔（ミリ秒）。manual は流さない */
 export const PACE_INTERVAL: Record<PaceMode, number | null> = {
@@ -76,6 +77,13 @@ type PlayState = {
    */
   paceMode: PaceMode;
   setPaceMode: (mode: PaceMode) => void;
+  /**
+   * 館の顔。front = 清潔な臨床実験室、back = その裏側。
+   * PC はホバーで裏を覗けるが、タッチ端末にはホバーが無い。
+   * 同じものを誰でも見られるように、明示的な切り替えも用意する。
+   */
+  labMode: LabMode;
+  toggleLabMode: () => void;
   setResult: (result: RunResult) => void;
   resetProgress: () => void;
 };
@@ -93,6 +101,10 @@ export const usePlayStore = create<PlayState>()(
           : 'thrill',
 
       setPaceMode: (mode) => set({ paceMode: mode }),
+
+      labMode: 'front',
+      toggleLabMode: () =>
+        set((state) => ({ labMode: state.labMode === 'front' ? 'back' : 'front' })),
 
       setResult: (result) =>
         set((state) => {
@@ -125,6 +137,7 @@ export const usePlayStore = create<PlayState>()(
         records: state.records,
         clearedEndings: state.clearedEndings,
         paceMode: state.paceMode,
+        labMode: state.labMode,
       }),
     },
   ),

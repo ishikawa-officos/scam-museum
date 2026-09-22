@@ -27,6 +27,8 @@ const OUT_DIR = path.join(ROOT, 'public', 'assets');
  * - quality は WebP の品質。写真は 78 前後で劣化がほぼ分からない
  */
 const RULES = [
+  // マスコットは線画なので、写真より高い品質で残す（にじむと安っぽく見える）
+  { match: /dr-bug|mascot/i, width: 560, quality: 92 },
   { match: /avatar|icon/i, width: 128, height: 128, fit: 'cover', quality: 82 },
   { match: /chart|screen|graph/i, width: 800, quality: 80 },
   { match: /.*/, width: 720, quality: 78 }, // 吹き出し内の写真（表示幅は最大でも約300px）
@@ -75,7 +77,8 @@ async function processRoom(room) {
   const outRoom = path.join(OUT_DIR, room);
   await mkdir(outRoom, { recursive: true });
 
-  const files = (await readdir(srcRoom)).filter((f) =>
+  // _ で始まるファイルは配信しない（デザインの参考資料など）
+  const files = (await readdir(srcRoom)).filter((f) => !f.startsWith('_')).filter((f) =>
     SOURCE_EXT.has(path.extname(f).toLowerCase()),
   );
   if (files.length === 0) return { room, results: [] };

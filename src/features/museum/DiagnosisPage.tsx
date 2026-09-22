@@ -50,7 +50,7 @@ export function DiagnosisPage() {
         </p>
         <button
           onClick={() => navigate('/rooms')}
-          className="btn-pop mt-7 bg-hall-accent px-7 py-3.5 font-display text-[15px] font-black text-hall-bg hover:bg-yellow-300"
+          className="btn-pop mt-7 bg-hall-accent px-7 py-3.5 font-display text-[15px] font-black text-hall-on-accent"
         >
           ［ 騙されに行く ］
         </button>
@@ -91,7 +91,7 @@ export function DiagnosisPage() {
                 <div className="flex items-baseline justify-between gap-3">
                   <h2 className="font-display font-bold text-lg">{axis.type}</h2>
                   {isPrimary && (
-                    <span className="shrink-0 rounded-full bg-hall-accent px-3 py-1 text-[10.5px] font-black text-hall-bg">
+                    <span className="shrink-0 rounded-full bg-hall-accent px-3 py-1 text-[10.5px] font-black text-hall-on-accent">
                       あなたのツボ
                     </span>
                   )}
@@ -182,7 +182,7 @@ export function DiagnosisPage() {
 
           <button
             onClick={share}
-            className="btn-pop mt-4 inline-flex items-center gap-2.5 bg-hall-accent px-6 py-3.5 font-display text-[14px] font-black text-hall-bg hover:bg-yellow-300"
+            className="btn-pop mt-4 inline-flex items-center gap-2.5 bg-hall-accent px-6 py-3.5 font-display text-[14px] font-black text-hall-on-accent"
           >
             {copied ? <Check size={16} /> : canShare ? <Share2 size={16} /> : <Copy size={16} />}
             {copied ? 'コピーしました' : canShare ? '［ 挑戦状を送る ］' : '［ 挑戦状をコピー ］'}
@@ -198,7 +198,7 @@ export function DiagnosisPage() {
           </button>
           <button
             onClick={() => navigate('/summary')}
-            className="flex-1 rounded-full bg-hall-accent py-3.5 text-[14px] font-semibold text-hall-bg transition hover:bg-hall-accent/90"
+            className="flex-1 rounded-full bg-hall-accent py-3.5 text-[14px] font-semibold text-hall-on-accent transition hover:bg-hall-accent/90"
           >
             現実に持ち帰る
           </button>

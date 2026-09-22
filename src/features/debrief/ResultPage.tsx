@@ -206,7 +206,7 @@ export function ResultPage() {
           </button>
           <button
             onClick={() => navigate('/rooms')}
-            className="btn-pop flex-1 bg-hall-accent py-3.5 font-display text-[14px] font-black text-hall-bg hover:bg-yellow-300"
+            className="btn-pop flex-1 bg-hall-accent py-3.5 font-display text-[14px] font-black text-hall-on-accent"
           >
             順路にもどる
           </button>

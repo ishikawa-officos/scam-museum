@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import { ROOMS } from '@/content/scenarios';
+import { usePlayStore } from '@/store/usePlayStore';
 
 const SITE = 'だまされる博物館';
 
@@ -55,6 +56,13 @@ export function AppShell() {
   // 回数で見ると、開発時の StrictMode による effect の再実行で
   // 最初の画面を遷移として読み上げてしまう
   const announcedPath = useRef(pathname);
+
+  // 館の顔は :root の属性ひとつで切り替える。
+  // 各画面は色トークンを見ているだけなので、画面側には手を入れない
+  const labMode = usePlayStore((s) => s.labMode);
+  useEffect(() => {
+    document.documentElement.dataset.lab = labMode;
+  }, [labMode]);
 
   useEffect(() => {
     const name = pageName(pathname);

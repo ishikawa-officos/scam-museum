@@ -1,20 +1,23 @@
 import { Link } from 'react-router-dom';
 import type { ReactNode } from 'react';
+import { LabModeSwitch } from './LabModeSwitch';
 
 /** 館内モードの共通レイアウト（SPEC.md §3.5） */
 export function HallLayout({ children }: { children: ReactNode }) {
   return (
-    <div className="relative min-h-[100dvh] bg-hall-bg text-hall-text">
-      <div
-        aria-hidden
-        className="pointer-events-none fixed inset-0"
-        style={{
-          background:
-            'radial-gradient(80% 40% at 50% -10%, rgba(250,204,21,0.07), transparent 70%)',
-        }}
-      />
+    <div className="lab-grid relative min-h-[100dvh] text-hall-text">
+      {/* 上端の警告テープ。清潔な研究所に一本だけ走る、立入禁止の帯 */}
+      <div aria-hidden className="lab-tape pointer-events-none fixed inset-x-0 top-0 z-10 h-2.5" />
+
+      {/* 右上に常駐する「裏」への切り替え。
+          ホバーの無い端末でも二面性に触れられるようにするため */}
+      <div className="pointer-events-none fixed inset-x-0 top-0 z-20 flex justify-end p-3">
+        <div className="pointer-events-auto">
+          <LabModeSwitch />
+        </div>
+      </div>
       {/* スキップリンクの着地点であり、支援技術が本文へ一発で飛ぶための目印 */}
-      <main id="main" className="relative mx-auto w-full max-w-2xl px-6 py-14 sm:py-20">
+      <main id="main" className="relative mx-auto w-full max-w-2xl px-6 pb-14 pt-16 sm:pb-20 sm:pt-20">
         {children}
       </main>
     </div>

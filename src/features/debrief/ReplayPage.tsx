@@ -143,7 +143,7 @@ export function ReplayPage() {
         </p>
         <button
           onClick={() => navigate(`/briefing/${scenarioId}`)}
-          className="btn-pop mt-5 bg-hall-accent px-6 py-3 font-display text-[14px] font-black text-hall-bg hover:bg-yellow-300"
+          className="btn-pop mt-5 bg-hall-accent px-6 py-3 font-display text-[14px] font-black text-hall-on-accent"
         >
           この展示をプレイする
         </button>
@@ -525,7 +525,7 @@ export function ReplayPage() {
         </button>
         <button
           onClick={() => navigate('/rooms')}
-          className="btn-pop flex-1 bg-hall-accent py-3.5 font-display text-[14px] font-black text-hall-bg hover:bg-yellow-300"
+          className="btn-pop flex-1 bg-hall-accent py-3.5 font-display text-[14px] font-black text-hall-on-accent"
         >
           順路にもどる
         </button>

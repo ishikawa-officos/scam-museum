@@ -23,7 +23,7 @@ export function HallNav() {
             [
               'inline-flex items-center gap-1.5 rounded-full border-2 px-3.5 py-1.5 transition',
               isActive
-                ? 'border-hall-accent bg-hall-accent text-hall-bg'
+                ? 'border-hall-accent bg-hall-accent text-hall-on-accent'
                 : 'border-transparent text-hall-muted hover:border-hall-line hover:text-hall-text',
             ].join(' ')
           }

@@ -35,6 +35,12 @@ export type RoomEntry = {
   minutes: number;
   /** 結末の総数。クリア状況の分母に使う（シナリオ側と一致させること） */
   endingCount: number;
+  /**
+   * その部屋で突かれる認知の欠陥を、臨床の言葉で言い直したもの。
+   * 館の裏の顔（臨床モード／PCのホバー）で表に出る。
+   * 個人を評する言葉にしないこと。主語は常に「脳」であって「あなた」ではない。
+   */
+  bias: string;
   status: 'ready' | 'coming-soon';
 };
 
@@ -46,6 +52,7 @@ export const ROOMS: RoomEntry[] = [
     subject: '国際ロマンス詐欺 ＋ 偽投資サイト誘導',
     minutes: 8,
     endingCount: 6,
+    bias: '好意を向けられた脳は、相手の要求を検証する回路を切る',
     status: 'ready',
   },
   {
@@ -55,6 +62,7 @@ export const ROOMS: RoomEntry[] = [
     subject: '同情と恋愛感情の搾取',
     minutes: 8,
     endingCount: 5,
+    bias: '一度払った脳は、払った事実のほうを正当化しはじめる',
     status: 'ready',
   },
   {
@@ -64,6 +72,7 @@ export const ROOMS: RoomEntry[] = [
     subject: '公的機関をかたる資産保全・口座凍結詐欺',
     minutes: 6,
     endingCount: 7,
+    bias: '急かされた脳は比較をやめる。権威の声だと、確認もやめる',
     status: 'ready',
   },
   {
@@ -73,6 +82,7 @@ export const ROOMS: RoomEntry[] = [
     subject: 'グループチャット型の投資詐欺（サクラ劇団型）',
     minutes: 9,
     endingCount: 8,
+    bias: '大勢が同じ方向を向くと、脳は自分の違和感のほうを疑う',
     status: 'ready',
   },
 ];

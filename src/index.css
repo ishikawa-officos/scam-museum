@@ -38,21 +38,30 @@
 }
 
 @theme {
-  /* ── 館内モード（現代的な企画展）──────────────────────────
-     黒×金のクラシックな博物館から、スレートネイビー×エレクトリックイエローの
-     ポップな展示へ。知的好奇心を刺激しつつ、入りやすい温度にする。 */
-  --color-hall-bg: #0f172a; /* slate-900 */
-  --color-hall-surface: #1a2438; /* パネル。背景よりわずかに明るい */
-  --color-hall-line: #334155; /* slate-700 */
-  --color-hall-text: #f1f5f9; /* slate-100 */
-  --color-hall-muted: #94a3b8; /* slate-400 */
+  /* ── 館内モード「認知バイアス臨床実験室」の表の顔 ──────────────
+     清潔なペールミントの研究所。方眼紙、カルテ、白衣の色。
+     暗い博物館ではなく、明るく親しみやすい臨床の場に見せる。
 
-  /* 主役は注意標識のイエロー。差し色にミントと警告オレンジ */
-  --color-hall-accent: #facc15; /* yellow-400 */
-  --color-hall-mint: #34d399; /* emerald-400 */
-  --color-hall-warn: #fb923c; /* orange-400 */
+     色は意味で名前を付けてある（bg / surface / line / text / muted / accent）。
+     裏の顔への反転は、この同じ名前を下で塗り替えるだけで済む。 */
+  --color-hall-bg: #eaf5f1; /* ペールミント */
+  --color-hall-paper: #faf7ef; /* 方眼紙。カードの下地 */
+  --color-hall-surface: #ffffff; /* カルテ・パネル */
+  --color-hall-line: #c5ddd5;
+  --color-hall-text: #123b36; /* 深い青緑。黒よりやわらかい */
+  --color-hall-muted: #4f6f69; /* 小さい文字でも 4.5:1 を満たす濃さ */
 
-  /* 体験モード（スマホの中身）: 実在アプリに寄せた明るい配色。ここは変えない */
+  /* 主役は臨床のオレンジ。文字に使える濃さにしてある。
+     見出しなど大きい文字だけ accent-strong を使う */
+  --color-hall-accent: #a83c0f;
+  --color-hall-accent-strong: #e2622f;
+  --color-hall-mint: #0f766e;
+  --color-hall-warn: #b45309;
+  --color-hall-tape: #fde68a; /* 警告テープのパステルイエロー */
+  /* アクセント色を背景に敷いたときの文字色。表裏で明暗が逆になる */
+  --color-hall-on-accent: #ffffff;
+
+  /* 体験モード（スマホの中身）: 実在アプリに寄せた配色。ここは変えない */
   --color-app-bg: #f2f4f7;
   --color-app-them: #ffffff;
   --color-app-me: #8de055;
@@ -61,14 +70,41 @@
   --font-display: 'Zen Kaku Gothic New', 'Noto Sans JP', system-ui, sans-serif;
 }
 
+/* ── 裏の顔（臨床モード）──────────────────────────────────
+   同じトークンを塗り替えるだけで館全体が反転する。
+   個々の画面には手を入れない。二面性は配色の切り替えで表現し、
+   文言の切り替えは Dr.バグの台詞に集約する。
+
+   ここで見せたいのは「被験者を見下す目線」ではなく、
+   「人間という種の認知の欠陥を、標本として冷たく面白がる目線」。
+   騙された個人を嘲笑うと、この展示自身の主張（SPEC.md §2.4）を裏切る。 */
+:root[data-lab='back'] {
+  --color-hall-bg: #10151a;
+  --color-hall-paper: #161d24;
+  --color-hall-surface: #1b242c;
+  --color-hall-line: #33454f;
+  --color-hall-text: #e6f2ef;
+  --color-hall-muted: #90a8a4;
+  --color-hall-accent: #ff6b3d;
+  --color-hall-accent-strong: #ff7a4d;
+  --color-hall-mint: #35d6a4;
+  --color-hall-warn: #ffb020;
+  --color-hall-tape: #6b4a12;
+  --color-hall-on-accent: #10151a;
+}
+
 @layer base {
   html {
+    color-scheme: light;
+  }
+  :root[data-lab='back'] {
     color-scheme: dark;
   }
   body {
     margin: 0;
     background: var(--color-hall-bg);
     color: var(--color-hall-text);
+    transition: background-color 0.35s ease, color 0.35s ease;
     font-family:
       'Noto Sans JP',
       system-ui,
@@ -118,15 +154,74 @@
   }
 }
 
-/* 蛍光マーカーで引いたような下線。見出しの一語を立たせるのに使う。
-   暗い背景では帯を厚くすると濁るので、細く・明るく引く */
+/* 蛍光マーカーで引いたような下線。見出しの一語を立たせるのに使う */
 .marker {
   background-image: linear-gradient(
-    transparent 74%,
-    color-mix(in srgb, var(--color-hall-accent) 85%, transparent) 74%
+    transparent 72%,
+    color-mix(in srgb, var(--color-hall-tape) 100%, transparent) 72%
   );
   background-repeat: no-repeat;
   padding-inline: 0.08em;
+}
+
+/* ── ラボの意匠 ────────────────────────────────────────── */
+
+/* 方眼紙。研究ノートの上に展示が乗っている、という下地 */
+.lab-grid {
+  background-color: var(--color-hall-bg);
+  background-image:
+    linear-gradient(color-mix(in srgb, var(--color-hall-line) 45%, transparent) 1px, transparent 1px),
+    linear-gradient(
+      90deg,
+      color-mix(in srgb, var(--color-hall-line) 45%, transparent) 1px,
+      transparent 1px
+    );
+  background-size: 22px 22px;
+}
+
+/* 立入禁止の警告テープ。斜めのストライプを帯で流す */
+.lab-tape {
+  background-image: repeating-linear-gradient(
+    -45deg,
+    var(--color-hall-tape) 0 14px,
+    color-mix(in srgb, var(--color-hall-surface) 92%, transparent) 14px 28px
+  );
+}
+
+/* カルテ／クリップボード。上に留め具の影を落とす */
+.lab-clipboard {
+  position: relative;
+  border-radius: 1rem;
+  border: 2px solid var(--color-hall-line);
+  background: var(--color-hall-surface);
+  box-shadow: 0 2px 0 0 color-mix(in srgb, var(--color-hall-line) 60%, transparent);
+}
+.lab-clipboard::before {
+  content: '';
+  position: absolute;
+  top: -9px;
+  left: 50%;
+  translate: -50% 0;
+  width: 78px;
+  height: 16px;
+  border-radius: 6px;
+  border: 2px solid var(--color-hall-line);
+  background: var(--color-hall-paper);
+}
+
+/* 検体ラベル。数字や記号を等幅で見せるための小さな札 */
+.lab-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  border-radius: 0.3rem;
+  border: 1.5px solid color-mix(in srgb, var(--color-hall-accent) 45%, transparent);
+  background: color-mix(in srgb, var(--color-hall-accent) 10%, transparent);
+  padding: 0.1rem 0.45rem;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: var(--color-hall-accent);
 }
 
 /* 展示会のタグのような小さなバッジ */
@@ -148,29 +243,65 @@
   color: var(--color-hall-accent);
 }
 
-/* 押し込めるボタン。上端のハイライトと、押下時に沈む動き */
+/* 太枠の丸角ピル。押すとカチッと沈む */
 .btn-pop {
   border-radius: 9999px;
-  border: 2px solid #0f172a;
-  box-shadow: 0 4px 0 0 #a16207;
+  border: 2.5px solid var(--color-hall-text);
+  /* 背景はここで決めない。利用側の bg-* を上書きしてしまうため */
+  box-shadow: 0 5px 0 0 var(--color-hall-text);
   transition:
     transform 0.08s ease,
     box-shadow 0.08s ease,
     background-color 0.15s ease;
 }
 .btn-pop:hover {
-  transform: translateY(1px);
-  box-shadow: 0 3px 0 0 #a16207;
+  transform: translateY(2px);
+  box-shadow: 0 3px 0 0 var(--color-hall-text);
 }
 .btn-pop:active {
-  transform: translateY(4px);
-  box-shadow: 0 0 0 0 #a16207;
+  transform: translateY(5px);
+  box-shadow: 0 0 0 0 var(--color-hall-text);
 }
 @media (prefers-reduced-motion: reduce) {
   .btn-pop:hover,
   .btn-pop:active {
     transform: none;
   }
+}
+
+/* ── 二面性のギミック ──────────────────────────────────────
+   PC ではホバーで裏の顔がちらつく。スマホにはホバーが無いので、
+   同じ内容を「臨床モード」の切り替えで見られるようにしてある
+   （どちらか一方でしか見られない仕掛けにはしない）。
+
+   hover:hover の中に閉じてあるのは、タッチ端末で hover が
+   「タップ後に貼り付く」誤作動を起こすため。 */
+.peek {
+  position: relative;
+}
+.peek-back {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  border-radius: inherit;
+  padding: 1rem;
+  text-align: center;
+  background: color-mix(in srgb, #0b1116 88%, transparent);
+  color: #ffd9c7;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.22s ease;
+}
+@media (hover: hover) and (pointer: fine) {
+  .peek:hover .peek-back,
+  .peek:focus-within .peek-back {
+    opacity: 1;
+  }
+}
+/* 裏モードでは、めくるまでもなく常に出ている */
+:root[data-lab='back'] .peek-back {
+  opacity: 1;
 }
 
 /* チャット領域のスクロールバーを控えめに */

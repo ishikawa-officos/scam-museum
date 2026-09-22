@@ -114,7 +114,7 @@ export function BriefingPage() {
 
         <button
           onClick={() => navigate(`/play/${scenario.id}`)}
-          className="btn-pop mt-9 w-full bg-hall-accent py-4 font-display text-[16px] font-black text-hall-bg hover:bg-yellow-300"
+          className="btn-pop mt-9 w-full bg-hall-accent py-4 font-display text-[16px] font-black text-hall-on-accent"
         >
           ［ 中に入る ］
         </button>

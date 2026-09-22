@@ -2,14 +2,43 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowRight, BookMarked, LifeBuoy } from 'lucide-react';
 import { HallFooter, HallLayout } from '@/components/ui/HallLayout';
+import { AssetImage } from '@/components/ui/AssetImage';
+import { DrBug } from '@/components/ui/DrBug';
 
 const BADGES = ['全4室', '所要 6〜9分', '入場無料', '損害額 0円', 'スマホ推奨'];
 
+/**
+ * 展示室の予告。
+ *
+ * hook は表の顔＝その部屋が始まるときの、やわらかい入口。
+ * bug は裏の顔＝そこで突かれる認知の欠陥を、臨床の言葉で言い直したもの。
+ * ホバー（PC）または臨床モード（全端末）で入れ替わる。
+ */
 const ROOM_TEASERS = [
-  { no: '01', title: '海の向こうの恋人', hook: '半年かけて、好きになってもらう' },
-  { no: '02', title: '支えたい、という気持ち', hook: '3,000円から始まる' },
-  { no: '03', title: 'あなたの口座が危ない', hook: 'たった4時間で終わる' },
-  { no: '04', title: 'みんな、儲かっている', hook: '187人が、あなたの背中を押す' },
+  {
+    no: '01',
+    title: '海の向こうの恋人',
+    hook: '半年かけて、好きになってもらう',
+    bug: '好意を向けられた脳は、相手の要求を検証する回路を切る',
+  },
+  {
+    no: '02',
+    title: '支えたい、という気持ち',
+    hook: '3,000円から始まる',
+    bug: '一度払った脳は、払った事実のほうを正当化しはじめる',
+  },
+  {
+    no: '03',
+    title: 'あなたの口座が危ない',
+    hook: 'たった4時間で終わる',
+    bug: '急かされた脳は、比較をやめる。権威の声だと、確認もやめる',
+  },
+  {
+    no: '04',
+    title: 'みんな、儲かっている',
+    hook: '187人が、あなたの背中を押す',
+    bug: '大勢が同じ方向を向くと、脳は自分の違和感のほうを疑う',
+  },
 ];
 
 /**
@@ -27,27 +56,36 @@ export function EntrancePage() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
       >
-        <p className="text-[11px] font-bold tracking-[0.3em] text-hall-accent">
-          MUSEUM OF BEING FOOLED
-        </p>
+        {/* 主役はまず Dr.バグ。顔が半分ずつ違うことに、
+            入口で気づいてもらう（気づかなくても、出口で分かる） */}
+        <div className="flex flex-col items-center text-center">
+          <AssetImage
+            src="/assets/common/dr-bug.webp"
+            alt="Dr.バグ。白衣を着た丸メガネの医師だが、顔の右半分は笑みを浮かべた別の誰かになっている"
+            className="w-[176px] drop-shadow-sm sm:w-[208px]"
+          />
 
-        <h1 className="mt-5 font-display text-[44px] font-black leading-[1.15] tracking-tight sm:text-[58px]">
-          <span className="marker">だまされる</span>
-          <br />
-          博物館
-        </h1>
+          <h1 className="mt-3 font-display text-[40px] font-black leading-[1.1] tracking-tight sm:text-[52px]">
+            だまされる
+            <span className="text-hall-accent-strong">博物館</span>
+          </h1>
 
-        <motion.p
-          initial={{ opacity: 0, y: 6 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.25, duration: 0.6 }}
-          className="mt-6 font-display text-[21px] font-bold leading-[1.6] text-hall-accent sm:text-[25px]"
-        >
-          ようこそ、<br className="sm:hidden" />
-          安心して騙される場所へ。
-        </motion.p>
+          <p className="mt-2 font-display text-[17px] font-bold tracking-[0.06em] text-hall-text sm:text-[20px]">
+            認知バイアス臨床実験室
+          </p>
 
-        <div className="mt-5 flex flex-wrap gap-2">
+          <motion.p
+            initial={{ opacity: 0, y: 6 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.25, duration: 0.6 }}
+            className="mt-4 text-[14.5px] font-bold leading-[1.8] text-hall-muted"
+          >
+            ようこそ、<br className="sm:hidden" />
+            安心して騙される場所へ。
+          </motion.p>
+        </div>
+
+        <div className="mt-6 flex flex-wrap justify-center gap-2">
           {BADGES.map((b, i) => (
             <motion.span
               key={b}
@@ -68,11 +106,15 @@ export function EntrancePage() {
             ただし、どれだけ騙されても、あなたのお金は
             <strong className="marker font-bold text-hall-text">一円も減りません</strong>。
           </p>
-          <p className="rounded-2xl border-2 border-hall-accent/45 bg-hall-accent/[0.08] p-5 font-display text-[17px] font-bold leading-[1.75] text-hall-text">
-            うまく騙された人ほど、よい来館者です。
-            <br />
-            どうぞ、心ゆくまで思い切り騙されてみてください。
-          </p>
+        </div>
+
+        {/* 案内役の一言。裏に切り替えると、同じ場所で本音が出る */}
+        <div className="mt-8">
+          <DrBug
+            size="sm"
+            front="ようこそ。うまく騙された人ほど、よい来館者です。どうぞ、心ゆくまで思い切り騙されてみてください。"
+            back="ようこそ、被験体No.001。あなたの脳は、この館の誰とも同じ場所で必ず躓く。何人見ても、寸分たがわず同じ場所だ。実に美しい。"
+          />
         </div>
 
         {/* 順路の予告 */}
@@ -83,13 +125,16 @@ export function EntrancePage() {
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.5 + i * 0.06, duration: 0.35 }}
-              className="rounded-2xl border-2 border-hall-line bg-hall-surface px-4 py-3.5"
+              className="peek overflow-hidden rounded-2xl border-2 border-hall-line bg-hall-surface px-4 py-3.5"
             >
               <p className="font-display text-[11px] font-black tracking-widest text-hall-accent">
                 ROOM {r.no}
               </p>
               <p className="mt-1 font-display text-[15px] font-bold">{r.title}</p>
               <p className="mt-1 text-[12.5px] text-hall-muted">{r.hook}</p>
+
+              {/* 裏。同じカードの下に、はじめから敷いてある */}
+              <span className="peek-back text-[12.5px] font-bold leading-relaxed">{r.bug}</span>
             </motion.div>
           ))}
         </div>
@@ -99,9 +144,12 @@ export function EntrancePage() {
           どこで、何が、どんな順番であなたを転ばせたのか。舞台裏を見てから帰る、そういう館です。
         </p>
 
-        <div className="mt-8 rounded-2xl border-2 border-hall-line bg-hall-surface/70 p-5 text-[13px] leading-relaxed text-hall-muted">
-          <p className="mb-2.5 font-display text-[13.5px] font-bold text-hall-text">
-            ご入館の前に
+        <div className="lab-clipboard mt-10 p-5 pt-7 text-[13px] leading-relaxed text-hall-muted">
+          <p className="mb-1 text-center">
+            <span className="lab-label">CONSENT FORM</span>
+          </p>
+          <p className="mb-2.5 text-center font-display text-[14px] font-bold text-hall-text">
+            ご入館の前に（同意事項）
           </p>
           <ul className="space-y-2">
             {[
@@ -132,9 +180,9 @@ export function EntrancePage() {
 
         <Link
           to="/rooms"
-          className="btn-pop group mt-9 inline-flex items-center gap-3 bg-hall-accent px-8 py-4 font-display text-[17px] font-black text-hall-bg hover:bg-yellow-300"
+          className="btn-pop group mt-9 inline-flex w-full items-center justify-center gap-3 bg-hall-surface px-8 py-4 font-display text-[17px] font-black text-hall-text hover:bg-hall-paper"
         >
-          ［ 騙されに入館する ］
+          ［ 被験者として入館する ］
           <ArrowRight size={19} strokeWidth={2.75} className="transition group-hover:translate-x-1" />
         </Link>
 
