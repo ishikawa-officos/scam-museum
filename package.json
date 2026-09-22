@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "preview": "vite preview",
-    "typecheck": "tsc -b --noEmit",
+    "typecheck": "tsc -b --force --noEmit",
     "optimize-images": "node scripts/optimize-images.mjs",
     "check-assets": "node scripts/check-assets.mjs",
     "export-scenario": "node --experimental-strip-types --no-warnings scripts/export-scenario.mjs",
