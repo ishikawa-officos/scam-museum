@@ -68,7 +68,15 @@ export function EntrancePage() {
             className="w-[176px] drop-shadow-sm [@media(max-height:700px)]:w-[132px] sm:w-[208px]"
           />
 
-          <h1 className="mt-3 font-display text-[40px] font-black leading-[1.1] tracking-tight sm:text-[52px]">
+          {/* 館の名前は、途中で折らない。
+              40px だと1行の実寸が 312px で、左右の余白 48px を引くと
+              360px 幅がちょうど限界だった。320px 端末では「だまされる博／物館」と
+              単語の途中で割れ、360px でも余裕がゼロで、字形しだいで割れうる。
+
+              そこで、入る幅に合わせて字のほうを詰める。
+              実測の 7.8em（tracking 込み）に対して 8.1 で割り、約4%の余裕を持たせた。
+              下限 28px は 270px 幅まで1行で収まる大きさ */}
+          <h1 className="mt-3 whitespace-nowrap font-display text-[clamp(28px,calc((100vw-48px)/8.1),40px)] font-black leading-[1.1] tracking-tight sm:text-[52px]">
             だまされる
             <span className="text-hall-accent-strong">博物館</span>
           </h1>
