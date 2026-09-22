@@ -76,7 +76,8 @@ const ROOM_AXIS: Record<string, AxisId> = {
 
 function damageRatio(record: RunResult | undefined): number {
   if (!record || record.savings <= 0) return 0;
-  return Math.min(1, record.stats.damage / record.savings);
+  // 黒字（出金が入金を上回った）経路がある。比率がマイナスになると軸が壊れるので 0 で止める
+  return Math.min(1, Math.max(0, record.stats.damage / record.savings));
 }
 
 /**
@@ -118,8 +119,9 @@ export function diagnose(records: Record<string, RunResult>): Diagnosis {
     primary: best ? best[0] : null,
     playedRooms: played.length,
     totalIrreversible: played.reduce((a, r) => a + r.irreversibleChoices.length, 0),
-    totalDamage: played.reduce((a, r) => a + r.stats.damage, 0),
-    allAvoided: played.length > 0 && played.every((r) => r.stats.damage === 0),
+    // 黒字ぶんで他室の被害を相殺しない。持っていかれた額だけを足す
+    totalDamage: played.reduce((a, r) => a + Math.max(0, r.stats.damage), 0),
+    allAvoided: played.length > 0 && played.every((r) => r.stats.damage <= 0),
   };
 }
 

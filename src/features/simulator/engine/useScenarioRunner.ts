@@ -80,7 +80,11 @@ function applyEffects(stats: Stats, effects?: Partial<Stats>): Stats {
     trust: clamp(stats.trust + (effects.trust ?? 0), 0, 100),
     pressure: clamp(stats.pressure + (effects.pressure ?? 0), 0, 100),
     isolation: clamp(stats.isolation + (effects.isolation ?? 0), 0, 100),
-    damage: Math.max(0, stats.damage + (effects.damage ?? 0)),
+    // 0 で止めない。出金が入金を上回る経路があり、そこを 0 に丸めると
+    // 「詐欺師から奪った」という体験が画面から消える。
+    // 第4展示室では、5万円入れて71,400円引き出せる場面がある。
+    // マイナス＝あなたの取り分（SPEC.md §2.3）
+    damage: stats.damage + (effects.damage ?? 0),
     days: Math.max(0, stats.days + (effects.days ?? 0)),
   };
 }

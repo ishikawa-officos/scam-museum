@@ -57,7 +57,8 @@ function applyEffects(stats, effects) {
     trust: clamp(stats.trust + (effects.trust ?? 0), 0, 100),
     pressure: clamp(stats.pressure + (effects.pressure ?? 0), 0, 100),
     isolation: clamp(stats.isolation + (effects.isolation ?? 0), 0, 100),
-    damage: Math.max(0, stats.damage + (effects.damage ?? 0)),
+    // エンジンと同じく 0 で止めない（黒字＝来館者の取り分）
+    damage: stats.damage + (effects.damage ?? 0),
     days: Math.max(0, stats.days + (effects.days ?? 0)),
   };
 }
@@ -208,8 +209,8 @@ for (const target of TARGETS) {
           '（判定画面は被害ありの口上に切り替わる）',
       );
     }
-    if (ending.grade === 'D_MAJOR' && min === 0) {
-      problems.push(`${target.id}: エンディング ${id} は「完落ち」だが、被害 ¥0 で到達する経路がある`);
+    if (ending.grade === 'D_MAJOR' && min <= 0) {
+      problems.push(`${target.id}: エンディング ${id} は「完落ち」だが、被害 ¥${min.toLocaleString()} で到達する経路がある`);
     }
   }
 

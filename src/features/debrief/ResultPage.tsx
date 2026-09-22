@@ -33,6 +33,18 @@ const VERDICT: Record<string, { tag: string; shout: string; lead: string }> = {
     shout: '大きいほうは、止められましたね。',
     lead: 'すでに渡した分は戻らないかもしれません。それでも、いちばん大きな一手の前で止まれたことのほうが、ここでは重要です。',
   },
+  /**
+   * 入れた額より多く引き出して帰った場合。
+   *
+   * ここは素直に勝ちとして出す。気分がよくなってもらわないと、
+   * この先の種明かし（その気分のよさこそが商品だった）が効かないため。
+   * ひっくり返すのは、この下に続くエンディング本文の仕事。
+   */
+  PROFIT: {
+    tag: '勝ち逃げ',
+    shout: 'おめでとうございます。あなたの勝ちです。',
+    lead: '入れた額より多く引き出して、黒字で帰ってきました。詐欺師から金を奪ったことになります。……気分は、いかがですか。',
+  },
   B_LUCKY: {
     tag: 'ぎりぎり生還',
     shout: 'あと一歩で落ちていました。',
@@ -50,7 +62,10 @@ const VERDICT: Record<string, { tag: string; shout: string; lead: string }> = {
   },
 };
 
-/** 数値のカウントアップ（被害額の演出）。一気に跳ね上げてから、わずかに行き過ぎて戻る */
+/**
+ * 数値のカウントアップ（金額の演出）。一気に跳ね上げてから、わずかに行き過ぎて戻る。
+ * 渡す値は絶対値（黒字でも桁が伸びる手応えは同じでよい）。
+ */
 function useCountUp(target: number, durationMs = 1400) {
   const [value, setValue] = useState(0);
   useEffect(() => {
@@ -90,9 +105,12 @@ export function ResultPage() {
   // 生還でも、そこまでに渡した分がある経路がある。口上を等級だけで決めると
   // 「失った金額 ¥30,000」の下に「無傷で出てきましたね。」と並ぶ
   const grade = ending?.grade ?? 'C_MINOR';
-  const key = grade === 'A_AVOIDED' && (result?.stats.damage ?? 0) > 0 ? 'A_AVOIDED_HURT' : grade;
+  const net = result?.stats.damage ?? 0;
+  /** マイナス＝入れた額より多く引き出した。あなたの取り分 */
+  const profit = net < 0;
+  const key = profit ? 'PROFIT' : grade === 'A_AVOIDED' && net > 0 ? 'A_AVOIDED_HURT' : grade;
   const verdict = VERDICT[key] ?? VERDICT.C_MINOR;
-  const damage = useCountUp(result?.stats.damage ?? 0);
+  const amount = useCountUp(Math.abs(net));
 
   if (status === 'loading') return <LoadingHall />;
 
@@ -124,7 +142,7 @@ export function ResultPage() {
           className="relative mt-8 overflow-hidden rounded-2xl border-2 border-hall-line bg-hall-surface p-8 text-center"
         >
           {/* 被害が出たときだけ、赤い光が一度だけ走る */}
-          {result.stats.damage > 0 && (
+          {net > 0 && (
             <motion.div
               aria-hidden
               className="pointer-events-none absolute inset-0"
@@ -138,17 +156,19 @@ export function ResultPage() {
           <p className="relative text-[12px] tracking-[0.3em] text-hall-muted">
             {verdict.tag}
           </p>
-          <p className="relative mt-5 text-[13px] text-hall-muted">失った金額</p>
+          <p className="relative mt-5 text-[13px] text-hall-muted">
+            {profit ? '詐欺師から奪った金額' : '失った金額'}
+          </p>
           <motion.p
             initial={{ scale: 0.8 }}
             animate={{ scale: [0.8, 1.08, 1] }}
             transition={{ duration: 1.5, times: [0, 0.6, 1], ease: 'easeOut' }}
             className={[
               'relative font-display font-bold text-[54px] leading-tight tabular-nums sm:text-6xl',
-              result.stats.damage > 0 ? 'text-rose-400' : 'text-hall-text',
+              net > 0 ? 'text-rose-400' : profit ? 'text-hall-mint' : 'text-hall-text',
             ].join(' ')}
           >
-            ¥{damage.toLocaleString('ja-JP')}
+            {profit ? '+' : ''}¥{amount.toLocaleString('ja-JP')}
           </motion.p>
           <p className="relative mt-4 text-[12px] text-hall-muted">
             経過日数 {result.stats.days} 日／一線を越えた操作{' '}
